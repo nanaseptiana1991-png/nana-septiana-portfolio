@@ -2,34 +2,30 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Manrope } from "next/font/google";
 import "@/styles/globals.css";
 import Navbar from "@/components/layout/Navbar";
-import PageTransition from "@/components/layout/PageTransition";
 import SmoothScroll from "@/components/layout/SmoothScroll";
-import SceneManager from "@/components/canvas/SceneManager";
+import PageTransition from "@/components/layout/PageTransition";
 import CustomCursor from "@/components/ui/CustomCursor";
+import ClientSceneWrapper from "@/components/canvas/ClientSceneWrapper";
 import { PROFILE_DATA } from "@/data/portfolioData";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "600", "700"],
+  display: "swap",
 });
 
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: `${PROFILE_DATA.name} — Interactive 3D Portfolio`,
-  description: PROFILE_DATA.shortIntro,
-  keywords: [
-    "Nana Septiana",
-    "Business Operations",
-    "Sales & Partnership",
-    "Web Application Development",
-    "Interactive 3D Portfolio",
-  ],
+  title: `${PROFILE_DATA.name} — Portfolio`,
+  description:
+    "Personal portfolio of Nana Septiana — bridging business operations, partner acquisition, and web application development.",
 };
 
 export default function RootLayout({
@@ -42,12 +38,12 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${manrope.variable} dark`}
     >
-      <body className="min-h-screen bg-obsidian font-sans text-white antialiased selection:bg-electric-blue/30">
-        <CustomCursor />
+      <body className="min-h-screen bg-obsidian font-sans text-white antialiased selection:bg-electric-blue selection:text-white">
         <SmoothScroll>
-          <SceneManager />
+          <CustomCursor />
+          <ClientSceneWrapper />
           <Navbar />
-          <main className="relative z-10 pt-16">
+          <main className="relative z-10 min-h-screen pt-16">
             <PageTransition>{children}</PageTransition>
           </main>
         </SmoothScroll>
