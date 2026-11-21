@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-const PHOTO_URL = "/images/foto.png";
+const PHOTO_URL = "/images/Profil.jfif";
 
 export default function SceneManager() {
   const pathname = usePathname();
