@@ -3,7 +3,6 @@
 import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import Avatar3D from "./Avatar3D";
 
@@ -30,7 +29,7 @@ class CanvasErrorBoundary extends Component<
   }
 
   componentDidCatch() {
-    // Keep page interactive if WebGL/R3F throws in browser
+    // Graceful fallback if WebGL/R3F fails in client browser
   }
 
   render() {
@@ -49,7 +48,7 @@ function getRouteSceneConfig(pathname: string): RouteSceneConfig {
         avatarPosDesktop: [-1.25, -0.95, 0.1],
         avatarPosMobile: [0, -1.25, -0.4],
         avatarYaw: 0.28,
-        keyLightIntensity: 1.5,
+        keyLightIntensity: 1.6,
         rimLightColor: "#93C5FD",
       };
     case "/expertise":
@@ -58,7 +57,7 @@ function getRouteSceneConfig(pathname: string): RouteSceneConfig {
         avatarPosDesktop: [1.45, -1.0, -0.2],
         avatarPosMobile: [0, -1.35, -0.6],
         avatarYaw: -0.22,
-        keyLightIntensity: 1.4,
+        keyLightIntensity: 1.5,
         rimLightColor: "#2563EB",
       };
     case "/projects":
@@ -67,7 +66,7 @@ function getRouteSceneConfig(pathname: string): RouteSceneConfig {
         avatarPosDesktop: [1.55, -1.05, -0.4],
         avatarPosMobile: [0, -1.4, -0.8],
         avatarYaw: -0.18,
-        keyLightIntensity: 1.35,
+        keyLightIntensity: 1.45,
         rimLightColor: "#60A5FA",
       };
     case "/experience":
@@ -76,7 +75,7 @@ function getRouteSceneConfig(pathname: string): RouteSceneConfig {
         avatarPosDesktop: [1.35, -0.98, -0.2],
         avatarPosMobile: [0, -1.35, -0.6],
         avatarYaw: -0.12,
-        keyLightIntensity: 1.45,
+        keyLightIntensity: 1.55,
         rimLightColor: "#A7B0C0",
       };
     case "/contact":
@@ -85,7 +84,7 @@ function getRouteSceneConfig(pathname: string): RouteSceneConfig {
         avatarPosDesktop: [1.05, -0.9, 0.25],
         avatarPosMobile: [0, -1.2, -0.3],
         avatarYaw: 0,
-        keyLightIntensity: 1.25,
+        keyLightIntensity: 1.35,
         rimLightColor: "#3B82F6",
       };
     case "/":
@@ -95,7 +94,7 @@ function getRouteSceneConfig(pathname: string): RouteSceneConfig {
         avatarPosDesktop: [1.1, -0.92, 0.15],
         avatarPosMobile: [0, -1.22, -0.35],
         avatarYaw: -0.08,
-        keyLightIntensity: 1.6,
+        keyLightIntensity: 1.7,
         rimLightColor: "#2563EB",
       };
   }
@@ -174,7 +173,8 @@ export default function SceneManager() {
         >
           <CameraRig targetPos={config.cameraPos} reducedMotion={reducedMotion} />
 
-          <ambientLight intensity={0.38} color="#CBD5E1" />
+          <ambientLight intensity={0.55} color="#CBD5E1" />
+          <hemisphereLight args={["#E2E8F0", "#0B0D12", 0.65]} />
           <directionalLight
             position={[2.8, 4.2, 3.5]}
             intensity={config.keyLightIntensity}
@@ -182,35 +182,20 @@ export default function SceneManager() {
           />
           <directionalLight
             position={[-2.5, 2.0, -2.6]}
-            intensity={0.95}
+            intensity={1.1}
             color={config.rimLightColor}
           />
           <pointLight
             position={[0.4, 1.2, 2.2]}
-            intensity={0.45}
+            intensity={0.55}
             color="#E2E8F0"
           />
-
-          <Environment resolution={128}>
-            <mesh scale={15}>
-              <sphereGeometry args={[1, 16, 16]} />
-              <meshBasicMaterial color="#181C26" side={THREE.BackSide} />
-            </mesh>
-          </Environment>
 
           <Avatar3D
             position={avatarPos}
             scale={avatarScale}
             targetYaw={config.avatarYaw}
             reducedMotion={reducedMotion}
-          />
-
-          <ContactShadows
-            position={[avatarPos[0], avatarPos[1] - 0.25, avatarPos[2]]}
-            opacity={0.45}
-            scale={3.5}
-            blur={2.2}
-            far={2.5}
           />
         </Canvas>
       </div>
