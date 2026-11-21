@@ -5,21 +5,57 @@ import { usePathname } from "next/navigation";
 
 const PHOTO_URL = "/images/Profil.jfif";
 
+interface RouteLookConfig {
+  boxClass: string;
+  lookX: number; // -1 = nengok ke kiri, 0 = depan, 1 = nengok ke kanan
+  lookY: number;
+  zoom: number;
+}
+
+function getRouteLook(pathname: string): RouteLookConfig {
+  switch (pathname) {
+    case "/contact":
+      return {
+        boxClass: "left-6 bottom-6 w-44 md:left-12 md:bottom-10 md:w-64",
+        lookX: -1,
+        lookY: 0.1,
+        zoom: 1.12,
+      };
+    case "/about":
+      return {
+        boxClass: "right-6 top-24 w-44 md:right-14 md:top-28 md:w-64",
+        lookX: 1,
+        lookY: -0.1,
+        zoom: 1.1,
+      };
+    case "/projects":
+      return {
+        boxClass: "right-6 bottom-6 w-40 md:right-12 md:bottom-8 md:w-56",
+        lookX: -0.6,
+        lookY: 0.2,
+        zoom: 1.08,
+      };
+    case "/":
+    default:
+      return {
+        boxClass: "right-6 bottom-6 w-48 md:right-14 md:top-1/2 md:-translate-y-1/2 md:w-72",
+        lookX: 0,
+        lookY: 0,
+        zoom: 1.05,
+      };
+  }
+}
+
 export default function SceneManager() {
   const pathname = usePathname();
-  const [tilt, setTilt] = useState({ x: 0, y: 0, spotX: 50, spotY: 35 });
   const [tick, setTick] = useState(0);
+  const [pointer, setPointer] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleMove = (e: PointerEvent) => {
       const nx = (e.clientX / window.innerWidth) * 2 - 1;
       const ny = (e.clientY / window.innerHeight) * 2 - 1;
-      setTilt({
-        x: -ny * 5,
-        y: nx * 6,
-        spotX: 50 + nx * 28,
-        spotY: 35 + ny * 22,
-      });
+      setPointer({ x: nx, y: ny });
     };
 
     let raf = 0;
@@ -39,13 +75,18 @@ export default function SceneManager() {
 
   if (!PHOTO_URL) return null;
 
-  const floatY = Math.sin(tick * 1.35) * 5;
-  const breath = 1 + Math.sin(tick * 1.35) * 0.01;
-  const yaw = Math.sin(tick * 0.7) * 1.4;
-  const positionClass =
-    pathname === "/about"
-      ? "left-8 top-24 w-64 lg:left-14 lg:w-72"
-      : "right-8 top-1/2 -translate-y-1/2 w-64 lg:right-16 lg:w-72";
+  const routeCfg = getRouteLook(pathname);
+
+  // Gerak napas halus + nengok mengikuti halaman + respons kursor
+  const idleTurn = Math.sin(tick * 1.1) * 0.14;
+  const breathY = Math.sin(tick * 1.5) * 4;
+  const totalTurnX = routeCfg.lookX + idleTurn + pointer.x * 0.25;
+  const totalTurnY = routeCfg.lookY + Math.cos(tick * 1.0) * 0.06 + pointer.y * 0.15;
+
+  const rotateYDeg = totalTurnX * 16;
+  const rotateXDeg = -totalTurnY * 10;
+  const innerPanX = totalTurnX * 14;
+  const innerPanY = totalTurnY * 10 + breathY;
 
   return (
     <div
@@ -53,33 +94,34 @@ export default function SceneManager() {
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
       <div
-        className={`block fixed transition-all duration-700 ease-out ${positionClass}`}
-        style={{ perspective: "1100px" }}
+        className={`fixed transition-all duration-700 ease-out ${routeCfg.boxClass}`}
+        style={{ perspective: "1000px" }}
       >
         <div
-          className="overflow-hidden rounded-2xl border border-white/15 bg-charcoal/85 shadow-2xl"
+          className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-white/15 bg-neutral-900 shadow-2xl transition-transform duration-300 ease-out"
           style={{
-            transform: `translate3d(${tilt.y * 0.8}px, ${
-              floatY + tilt.x * 0.5
-            }px, 0) rotateX(${tilt.x}deg) rotateY(${
-              tilt.y + yaw - 3
-            }deg) scale(${breath})`,
+            transform: `translate3d(0, ${breathY * 0.5}px, 0) rotateX(${rotateXDeg}deg) rotateY(${rotateYDeg}deg)`,
             transformStyle: "preserve-3d",
           }}
         >
-          <div className="relative aspect-[3/4] w-full overflow-hidden">
-            <img
-              src={PHOTO_URL}
-              alt="Nana Septiana"
-              className="h-full w-full object-contain object-center"
-            />
-            <div
-              className="pointer-events-none absolute inset-0 mix-blend-screen"
-              style={{
-                background: `radial-gradient(circle at ${tilt.spotX}% ${tilt.spotY}%, rgba(255,255,255,0.14), transparent 58%)`,
-              }}
-            />
-          </div>
+          <img
+            src={PHOTO_URL}
+            alt="Nana Septiana"
+            className="h-full w-full object-contain object-center transition-transform duration-500 ease-out"
+            style={{
+              transform: `scale(${routeCfg.zoom}) translate3d(${innerPanX}px, ${innerPanY}px, 0)`,
+            }}
+          />
+
+          {/* Samarkan latar putih dengan vignette gelap di pinggir */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 42%, rgba(11,13,18,0) 44%, rgba(11,13,18,0.65) 82%, rgba(11,13,18,0.94) 100%)",
+            }}
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-neutral-950/90 to-transparent" />
         </div>
       </div>
     </div>
