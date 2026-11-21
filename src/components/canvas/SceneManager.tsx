@@ -1,10 +1,8 @@
 "use client";
 
-import { Component, useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import Avatar3D from "./Avatar3D";
 
 interface RouteSceneConfig {
   cameraPos: [number, number, number];
@@ -13,31 +11,6 @@ interface RouteSceneConfig {
   avatarYaw: number;
   keyLightIntensity: number;
   rimLightColor: string;
-}
-
-class CanvasErrorBoundary extends Component<
-  { children: ReactNode },
-  { crashed: boolean }
-> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { crashed: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { crashed: true };
-  }
-
-  componentDidCatch() {
-    // Graceful fallback if WebGL/R3F fails in client browser
-  }
-
-  render() {
-    if (this.state.crashed) {
-      return null;
-    }
-    return this.props.children;
-  }
 }
 
 function getRouteSceneConfig(pathname: string): RouteSceneConfig {
@@ -100,105 +73,341 @@ function getRouteSceneConfig(pathname: string): RouteSceneConfig {
   }
 }
 
-function CameraRig({
-  targetPos,
-  reducedMotion,
-}: {
-  targetPos: [number, number, number];
-  reducedMotion: boolean;
-}) {
-  const { camera } = useThree();
-  const desiredVec = useRef(new THREE.Vector3(...targetPos));
+function buildAvatarRig() {
+  const root = new THREE.Group();
+  root.name = "StudioPlaceholderFullBodyAvatar";
 
-  useEffect(() => {
-    desiredVec.current.set(...targetPos);
-    if (reducedMotion) {
-      camera.position.set(...targetPos);
-      camera.lookAt(0, 0.05, 0);
-    }
-  }, [targetPos, reducedMotion, camera]);
-
-  useFrame((_, delta) => {
-    if (reducedMotion) return;
-    const step = Math.min(delta, 0.05) * 3.2;
-    camera.position.lerp(desiredVec.current, step);
-    camera.lookAt(0, 0.05, 0);
+  const suitMat = new THREE.MeshStandardMaterial({
+    color: "#151821",
+    roughness: 0.68,
+    metalness: 0.08,
+  });
+  const shirtMat = new THREE.MeshStandardMaterial({
+    color: "#E6EAF0",
+    roughness: 0.55,
+    metalness: 0.02,
+  });
+  const placeholderMat = new THREE.MeshStandardMaterial({
+    color: "#8A93A3",
+    roughness: 0.52,
+    metalness: 0.06,
+  });
+  const shoeMat = new THREE.MeshStandardMaterial({
+    color: "#0B0D12",
+    roughness: 0.35,
+    metalness: 0.22,
   });
 
-  return null;
+  const makeLeg = (x: number, z: number) => {
+    const leg = new THREE.Group();
+    leg.position.set(x, 0.48, z);
+
+    const upper = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.082, 0.064, 0.44, 24),
+      suitMat
+    );
+    upper.position.set(0, 0.22, 0);
+    leg.add(upper);
+
+    const lower = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.064, 0.052, 0.44, 24),
+      suitMat
+    );
+    lower.position.set(0, -0.02, 0.01);
+    leg.add(lower);
+
+    const shoe = new THREE.Mesh(
+      new THREE.BoxGeometry(0.105, 0.065, 0.24),
+      shoeMat
+    );
+    shoe.position.set(0, -0.26, 0.04);
+    leg.add(shoe);
+
+    return leg;
+  };
+
+  root.add(makeLeg(-0.11, 0));
+  root.add(makeLeg(0.11, 0.03));
+
+  const hips = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.155, 0.14, 0.14, 28),
+    suitMat
+  );
+  hips.position.set(0, 0.94, 0);
+  root.add(hips);
+
+  const torso = new THREE.Group();
+  torso.position.set(0, 1.12, 0);
+  root.add(torso);
+
+  const chest = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.205, 0.155, 0.38, 32),
+    suitMat
+  );
+  chest.position.set(0, 0.16, 0);
+  torso.add(chest);
+
+  const shirtFront = new THREE.Mesh(
+    new THREE.BoxGeometry(0.11, 0.24, 0.04),
+    shirtMat
+  );
+  shirtFront.position.set(0, 0.22, 0.165);
+  shirtFront.rotation.x = -0.12;
+  torso.add(shirtFront);
+
+  const makeArm = (side: -1 | 1) => {
+    const arm = new THREE.Group();
+    arm.position.set(side * 0.245, 0.31, 0);
+
+    const shoulder = new THREE.Mesh(
+      new THREE.SphereGeometry(0.072, 20, 20),
+      suitMat
+    );
+    shoulder.position.set(0, -0.02, 0);
+    arm.add(shoulder);
+
+    const upperArm = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.062, 0.052, 0.3, 20),
+      suitMat
+    );
+    upperArm.position.set(0, -0.18, 0.01);
+    arm.add(upperArm);
+
+    const forearm = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.05, 0.042, 0.24, 20),
+      shirtMat
+    );
+    forearm.position.set(0, -0.38, 0.02);
+    arm.add(forearm);
+
+    const hand = new THREE.Mesh(
+      new THREE.SphereGeometry(0.044, 18, 18),
+      placeholderMat
+    );
+    hand.position.set(0, -0.53, 0.025);
+    arm.add(hand);
+
+    return arm;
+  };
+
+  const leftArm = makeArm(-1);
+  const rightArm = makeArm(1);
+  torso.add(leftArm, rightArm);
+
+  const neck = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.058, 0.066, 0.11, 20),
+    placeholderMat
+  );
+  neck.position.set(0, 0.39, 0.01);
+  torso.add(neck);
+
+  const head = new THREE.Group();
+  head.position.set(0, 0.54, 0.015);
+  torso.add(head);
+
+  const headMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.115, 28, 28),
+    placeholderMat
+  );
+  head.add(headMesh);
+
+  const hairMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.118, 28, 24, 0, Math.PI * 2, 0, Math.PI * 0.58),
+    shoeMat
+  );
+  hairMesh.position.set(0, 0.035, -0.012);
+  head.add(hairMesh);
+
+  return { root, torso, head, leftArm, rightArm };
 }
 
 export default function SceneManager() {
   const pathname = usePathname();
-  const [isMobile, setIsMobile] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const configRef = useRef<RouteSceneConfig>(getRouteSceneConfig(pathname));
 
   useEffect(() => {
+    configRef.current = getRouteSceneConfig(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let renderer: THREE.WebGLRenderer | null = null;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: "high-performance",
+        alpha: true,
+      });
+    } catch {
+      return;
+    }
+
     const mqMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const mqMobile = window.matchMedia("(max-width: 767px)");
+    let reducedMotion = mqMotion.matches;
+    let isMobile = mqMobile.matches;
 
-    const syncFlags = () => {
-      setReducedMotion(mqMotion.matches);
-      setIsMobile(mqMobile.matches);
+    const scene = new THREE.Scene();
+    const initialCfg = configRef.current;
+
+    const camera = new THREE.PerspectiveCamera(
+      38,
+      container.clientWidth / Math.max(container.clientHeight, 1),
+      0.1,
+      50
+    );
+    camera.position.set(...initialCfg.cameraPos);
+    camera.lookAt(0, 0.05, 0);
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    renderer.setSize(container.clientWidth, container.clientHeight, false);
+    container.innerHTML = "";
+    container.appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight("#CBD5E1", 0.55);
+    const hemiLight = new THREE.HemisphereLight("#E2E8F0", "#0B0D12", 0.65);
+    const keyLight = new THREE.DirectionalLight(
+      "#FFFFFF",
+      initialCfg.keyLightIntensity
+    );
+    keyLight.position.set(2.8, 4.2, 3.5);
+
+    const rimLight = new THREE.DirectionalLight(initialCfg.rimLightColor, 1.1);
+    rimLight.position.set(-2.5, 2.0, -2.6);
+
+    const fillLight = new THREE.PointLight("#E2E8F0", 0.55);
+    fillLight.position.set(0.4, 1.2, 2.2);
+
+    scene.add(ambientLight, hemiLight, keyLight, rimLight, fillLight);
+
+    const avatarRig = buildAvatarRig();
+    const startPos = isMobile
+      ? initialCfg.avatarPosMobile
+      : initialCfg.avatarPosDesktop;
+    avatarRig.root.position.set(...startPos);
+    avatarRig.root.rotation.y = initialCfg.avatarYaw;
+    scene.add(avatarRig.root);
+
+    const pointer = { x: 0, y: 0 };
+    const handlePointerMove = (e: PointerEvent) => {
+      const nx = (e.clientX / window.innerWidth) * 2 - 1;
+      const ny = (e.clientY / window.innerHeight) * 2 - 1;
+      pointer.x = nx * 0.09;
+      pointer.y = ny * 0.04;
     };
 
-    syncFlags();
-    mqMotion.addEventListener("change", syncFlags);
-    mqMobile.addEventListener("change", syncFlags);
+    const handleResize = () => {
+      if (!container || !renderer) return;
+      const w = container.clientWidth;
+      const h = Math.max(container.clientHeight, 1);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    };
+
+    const syncMedia = () => {
+      reducedMotion = mqMotion.matches;
+      isMobile = mqMobile.matches;
+    };
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("resize", handleResize);
+    mqMotion.addEventListener("change", syncMedia);
+    mqMobile.addEventListener("change", syncMedia);
+
+    const clock = new THREE.Clock();
+    const targetCamVec = new THREE.Vector3();
+    const targetAvatarVec = new THREE.Vector3();
+    let rafId = 0;
+
+    const animate = () => {
+      rafId = window.requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.getElapsedTime();
+      const cfg = configRef.current;
+
+      keyLight.intensity = cfg.keyLightIntensity;
+      rimLight.color.set(cfg.rimLightColor);
+
+      targetCamVec.set(...cfg.cameraPos);
+      const desiredAvatarPos = isMobile
+        ? cfg.avatarPosMobile
+        : cfg.avatarPosDesktop;
+      targetAvatarVec.set(...desiredAvatarPos);
+      const desiredScale = isMobile ? 0.86 : 1.0;
+
+      if (reducedMotion) {
+        camera.position.copy(targetCamVec);
+        avatarRig.root.position.copy(targetAvatarVec);
+        avatarRig.root.scale.setScalar(desiredScale);
+        avatarRig.root.rotation.set(0, cfg.avatarYaw, 0);
+      } else {
+        camera.position.lerp(targetCamVec, delta * 3.2);
+        avatarRig.root.position.lerp(targetAvatarVec, delta * 4.0);
+        const nextScale = THREE.MathUtils.lerp(
+          avatarRig.root.scale.x,
+          desiredScale,
+          delta * 4.0
+        );
+        avatarRig.root.scale.setScalar(nextScale);
+
+        const desiredYaw = cfg.avatarYaw + pointer.x;
+        const desiredPitch = -pointer.y * 0.35;
+        avatarRig.root.rotation.y = THREE.MathUtils.lerp(
+          avatarRig.root.rotation.y,
+          desiredYaw,
+          delta * 4.5
+        );
+        avatarRig.root.rotation.x = THREE.MathUtils.lerp(
+          avatarRig.root.rotation.x,
+          desiredPitch,
+          delta * 4.5
+        );
+
+        const breath = Math.sin(elapsed * 1.4) * 0.008;
+        avatarRig.torso.position.y = 1.12 + breath;
+        avatarRig.torso.rotation.z = Math.sin(elapsed * 0.7) * 0.008;
+        avatarRig.head.rotation.y = Math.sin(elapsed * 0.55) * 0.04;
+        avatarRig.head.rotation.x = Math.cos(elapsed * 0.9) * 0.015;
+        avatarRig.leftArm.rotation.z = 0.06 + Math.sin(elapsed * 1.1) * 0.012;
+        avatarRig.rightArm.rotation.z = -0.06 - Math.sin(elapsed * 1.1) * 0.012;
+      }
+
+      camera.lookAt(0, 0.05, 0);
+      renderer?.render(scene, camera);
+    };
+
+    animate();
 
     return () => {
-      mqMotion.removeEventListener("change", syncFlags);
-      mqMobile.removeEventListener("change", syncFlags);
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("resize", handleResize);
+      mqMotion.removeEventListener("change", syncMedia);
+      mqMobile.removeEventListener("change", syncMedia);
+
+      scene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry?.dispose();
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach((m) => m.dispose());
+          } else {
+            obj.material?.dispose();
+          }
+        }
+      });
+      renderer?.dispose();
     };
   }, []);
 
-  const config = getRouteSceneConfig(pathname);
-  const avatarPos = isMobile ? config.avatarPosMobile : config.avatarPosDesktop;
-  const avatarScale = isMobile ? 0.86 : 1.0;
-
   return (
-    <CanvasErrorBoundary>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 h-screen w-screen opacity-90"
-      >
-        <Canvas
-          dpr={[1, 1.75]}
-          camera={{ position: config.cameraPos, fov: 38, near: 0.1, far: 50 }}
-          gl={{
-            antialias: true,
-            powerPreference: "high-performance",
-            alpha: true,
-          }}
-        >
-          <CameraRig targetPos={config.cameraPos} reducedMotion={reducedMotion} />
-
-          <ambientLight intensity={0.55} color="#CBD5E1" />
-          <hemisphereLight args={["#E2E8F0", "#0B0D12", 0.65]} />
-          <directionalLight
-            position={[2.8, 4.2, 3.5]}
-            intensity={config.keyLightIntensity}
-            color="#FFFFFF"
-          />
-          <directionalLight
-            position={[-2.5, 2.0, -2.6]}
-            intensity={1.1}
-            color={config.rimLightColor}
-          />
-          <pointLight
-            position={[0.4, 1.2, 2.2]}
-            intensity={0.55}
-            color="#E2E8F0"
-          />
-
-          <Avatar3D
-            position={avatarPos}
-            scale={avatarScale}
-            targetYaw={config.avatarYaw}
-            reducedMotion={reducedMotion}
-          />
-        </Canvas>
-      </div>
-    </CanvasErrorBoundary>
+    <div
+      ref={containerRef}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-0 h-screen w-screen opacity-90"
+    />
   );
 }
