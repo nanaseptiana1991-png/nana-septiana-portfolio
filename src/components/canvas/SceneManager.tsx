@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-const PHOTO_URL = "/images/profile.jpg";
+const PHOTO_URL = "/images/profile.png";
 
 interface RoutePhotoConfig {
   desktopClass: string;
@@ -17,40 +17,40 @@ function getRoutePhotoConfig(pathname: string): RoutePhotoConfig {
   switch (pathname) {
     case "/about":
       return {
-        desktopClass: "left-8 top-28 w-72 lg:left-14 lg:w-80",
-        mobileClass: "left-1/2 -translate-x-1/2 bottom-8 w-56 opacity-25",
+        desktopClass: "left-8 top-24 w-64 lg:left-14 lg:w-72",
+        mobileClass: "left-1/2 -translate-x-1/2 bottom-6 w-44 opacity-25",
         baseTiltX: 1.5,
         baseTiltY: 4,
         accentColor: "rgba(147, 197, 253, 0.35)",
       };
     case "/expertise":
       return {
-        desktopClass: "right-8 top-28 w-72 lg:right-14 lg:w-80",
-        mobileClass: "left-1/2 -translate-x-1/2 bottom-8 w-56 opacity-20",
+        desktopClass: "right-8 top-24 w-64 lg:right-14 lg:w-72",
+        mobileClass: "left-1/2 -translate-x-1/2 bottom-6 w-44 opacity-20",
         baseTiltX: -1,
         baseTiltY: -4,
         accentColor: "rgba(37, 99, 235, 0.4)",
       };
     case "/projects":
       return {
-        desktopClass: "right-8 top-24 w-64 lg:right-12 lg:w-72",
-        mobileClass: "left-1/2 -translate-x-1/2 bottom-8 w-52 opacity-15",
+        desktopClass: "right-8 top-24 w-56 lg:right-12 lg:w-64",
+        mobileClass: "left-1/2 -translate-x-1/2 bottom-6 w-40 opacity-15",
         baseTiltX: 0,
         baseTiltY: -3,
         accentColor: "rgba(96, 165, 250, 0.35)",
       };
     case "/experience":
       return {
-        desktopClass: "right-8 top-28 w-72 lg:right-14 lg:w-80",
-        mobileClass: "left-1/2 -translate-x-1/2 bottom-8 w-56 opacity-20",
+        desktopClass: "right-8 top-24 w-64 lg:right-14 lg:w-72",
+        mobileClass: "left-1/2 -translate-x-1/2 bottom-6 w-44 opacity-20",
         baseTiltX: -1,
         baseTiltY: -3,
         accentColor: "rgba(167, 176, 192, 0.3)",
       };
     case "/contact":
       return {
-        desktopClass: "right-8 top-28 w-72 lg:right-14 lg:w-80",
-        mobileClass: "left-1/2 -translate-x-1/2 bottom-8 w-56 opacity-20",
+        desktopClass: "right-8 top-24 w-64 lg:right-14 lg:w-72",
+        mobileClass: "left-1/2 -translate-x-1/2 bottom-6 w-44 opacity-20",
         baseTiltX: 0,
         baseTiltY: -2,
         accentColor: "rgba(59, 130, 246, 0.4)",
@@ -59,8 +59,8 @@ function getRoutePhotoConfig(pathname: string): RoutePhotoConfig {
     default:
       return {
         desktopClass:
-          "right-8 top-1/2 -translate-y-1/2 w-80 lg:right-16 lg:w-[360px]",
-        mobileClass: "left-1/2 -translate-x-1/2 bottom-8 w-60 opacity-25",
+          "right-8 top-1/2 -translate-y-1/2 w-64 lg:right-16 lg:w-72",
+        mobileClass: "left-1/2 -translate-x-1/2 bottom-6 w-44 opacity-25",
         baseTiltX: 0,
         baseTiltY: -3,
         accentColor: "rgba(37, 99, 235, 0.42)",
@@ -70,7 +70,12 @@ function getRoutePhotoConfig(pathname: string): RoutePhotoConfig {
 
 export default function SceneManager() {
   const pathname = usePathname();
-  const [pointerTilt, setPointerTilt] = useState({ x: 0, y: 0, spotX: 50, spotY: 35 });
+  const [pointerTilt, setPointerTilt] = useState({
+    x: 0,
+    y: 0,
+    spotX: 50,
+    spotY: 35,
+  });
   const [breathPhase, setBreathPhase] = useState(0);
   const [photoFailed, setPhotoFailed] = useState(false);
 
@@ -84,8 +89,8 @@ export default function SceneManager() {
       const nx = (e.clientX / window.innerWidth) * 2 - 1;
       const ny = (e.clientY / window.innerHeight) * 2 - 1;
       setPointerTilt({
-        x: -ny * 6,
-        y: nx * 7,
+        x: -ny * 5,
+        y: nx * 6,
         spotX: 50 + nx * 28,
         spotY: 35 + ny * 22,
       });
@@ -112,9 +117,9 @@ export default function SceneManager() {
   }
 
   const config = getRoutePhotoConfig(pathname);
-  const idleFloatY = Math.sin(breathPhase * 1.4) * 6;
-  const idleBreathScale = 1 + Math.sin(breathPhase * 1.4) * 0.012;
-  const idleYaw = Math.sin(breathPhase * 0.75) * 1.6;
+  const idleFloatY = Math.sin(breathPhase * 1.35) * 5;
+  const idleBreathScale = 1 + Math.sin(breathPhase * 1.35) * 0.01;
+  const idleYaw = Math.sin(breathPhase * 0.7) * 1.4;
 
   const rotateX = config.baseTiltX + pointerTilt.x;
   const rotateY = config.baseTiltY + pointerTilt.y + idleYaw;
@@ -130,7 +135,6 @@ export default function SceneManager() {
           perspective: "1100px",
         }}
       >
-        {/* Rim glow behind portrait */}
         <div
           className="absolute -inset-3 -z-10 rounded-3xl blur-2xl transition-opacity duration-500"
           style={{
@@ -138,12 +142,11 @@ export default function SceneManager() {
           }}
         />
 
-        {/* 3D tilted & breathing portrait card */}
         <div
           className="overflow-hidden rounded-2xl border border-white/15 bg-charcoal/85 shadow-2xl will-change-transform"
           style={{
-            transform: `translate3d(${pointerTilt.y * 0.9}px, ${
-              idleFloatY + pointerTilt.x * 0.6
+            transform: `translate3d(${pointerTilt.y * 0.8}px, ${
+              idleFloatY + pointerTilt.x * 0.5
             }px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${idleBreathScale})`,
             transformStyle: "preserve-3d",
           }}
@@ -154,23 +157,21 @@ export default function SceneManager() {
               alt="Nana Septiana"
               onError={() => setPhotoFailed(true)}
               style={{
-                transform: `scale(1.06) translate3d(${-pointerTilt.y * 1.4}px, ${
-                  -pointerTilt.x * 1.2
+                transform: `scale(1.03) translate3d(${-pointerTilt.y * 1.1}px, ${
+                  -pointerTilt.x * 0.9
                 }px, 0)`,
               }}
               className="h-full w-full object-cover object-top transition-transform duration-150 ease-out will-change-transform"
             />
 
-            {/* Dynamic specular highlight following cursor */}
             <div
               className="pointer-events-none absolute inset-0 mix-blend-screen"
               style={{
-                background: `radial-gradient(circle at ${pointerTilt.spotX}% ${pointerTilt.spotY}%, rgba(255,255,255,0.14), transparent 58%)`,
+                background: `radial-gradient(circle at ${pointerTilt.spotX}% ${pointerTilt.spotY}%, rgba(255,255,255,0.12), transparent 58%)`,
               }}
             />
 
-            {/* Vignette & edge depth */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-obsidian/85 via-transparent to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-obsidian/80 via-transparent to-transparent" />
           </div>
         </div>
       </div>
@@ -181,7 +182,7 @@ export default function SceneManager() {
         <div
           className="overflow-hidden rounded-2xl border border-white/15 bg-charcoal/80 shadow-xl"
           style={{
-            transform: `translate3d(0, ${idleFloatY * 0.5}px, 0) scale(${idleBreathScale})`,
+            transform: `translate3d(0, ${idleFloatY * 0.45}px, 0) scale(${idleBreathScale})`,
           }}
         >
           <div className="relative aspect-[3/4] w-full overflow-hidden">
