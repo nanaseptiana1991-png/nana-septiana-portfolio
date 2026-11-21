@@ -1,31 +1,18 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Manrope } from "next/font/google";
-import "@/styles/globals.css";
-import Navbar from "@/components/layout/Navbar";
-import SmoothScroll from "@/components/layout/SmoothScroll";
-import PageTransition from "@/components/layout/PageTransition";
-import CustomCursor from "@/components/ui/CustomCursor";
-import ClientSceneWrapper from "@/components/canvas/ClientSceneWrapper";
-import { PROFILE_DATA } from "@/data/portfolioData";
+import { Kanit } from "next/font/google";
+import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const kanit = Kanit({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  weight: ["500", "600", "700"],
-  display: "swap",
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-kanit",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: `${PROFILE_DATA.name} — Portfolio`,
+  title: "Nana -- 3D Creator",
   description:
-    "Personal portfolio of Nana Septiana — bridging business operations, partner acquisition, and web application development.",
+    "3D Creator portfolio for Nana Septiana — crafting striking 3D modeling, rendering, motion design, branding, and web experiences.",
 };
 
 export default function RootLayout({
@@ -34,19 +21,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${spaceGrotesk.variable} ${manrope.variable} dark`}
-    >
-      <body className="min-h-screen bg-obsidian font-sans text-white antialiased selection:bg-electric-blue selection:text-white">
-        <SmoothScroll>
-          <CustomCursor />
-          <ClientSceneWrapper />
-          <Navbar />
-          <main className="relative z-10 min-h-screen pt-16">
-            <PageTransition>{children}</PageTransition>
-          </main>
-        </SmoothScroll>
+    <html lang="en" className={`${kanit.variable} dark`}>
+      <body
+        className={`${kanit.className} min-h-screen bg-[#0C0C0C] text-[#D7E2EA] antialiased overflow-x-clip`}
+      >
+        <div id="root" className="min-h-screen bg-[#0C0C0C] overflow-x-clip">
+          {children}
+        </div>
       </body>
     </html>
   );
