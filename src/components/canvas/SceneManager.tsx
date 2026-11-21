@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, ContactShadows } from "@react-three/drei";
@@ -14,6 +14,31 @@ interface RouteSceneConfig {
   avatarYaw: number;
   keyLightIntensity: number;
   rimLightColor: string;
+}
+
+class CanvasErrorBoundary extends Component<
+  { children: ReactNode },
+  { crashed: boolean }
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { crashed: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { crashed: true };
+  }
+
+  componentDidCatch() {
+    // Keep page interactive if WebGL/R3F throws in browser
+  }
+
+  render() {
+    if (this.state.crashed) {
+      return null;
+    }
+    return this.props.children;
+  }
 }
 
 function getRouteSceneConfig(pathname: string): RouteSceneConfig {
@@ -133,56 +158,62 @@ export default function SceneManager() {
   const avatarScale = isMobile ? 0.86 : 1.0;
 
   return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 h-screen w-screen opacity-90"
-    >
-      <Canvas
-        dpr={[1, 1.75]}
-        camera={{ position: config.cameraPos, fov: 38, near: 0.1, far: 50 }}
-        gl={{
-          antialias: true,
-          powerPreference: "high-performance",
-          alpha: true,
-        }}
+    <CanvasErrorBoundary>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 h-screen w-screen opacity-90"
       >
-        <CameraRig targetPos={config.cameraPos} reducedMotion={reducedMotion} />
+        <Canvas
+          dpr={[1, 1.75]}
+          camera={{ position: config.cameraPos, fov: 38, near: 0.1, far: 50 }}
+          gl={{
+            antialias: true,
+            powerPreference: "high-performance",
+            alpha: true,
+          }}
+        >
+          <CameraRig targetPos={config.cameraPos} reducedMotion={reducedMotion} />
 
-        <ambientLight intensity={0.38} color="#CBD5E1" />
-        <directionalLight
-          position={[2.8, 4.2, 3.5]}
-          intensity={config.keyLightIntensity}
-          color="#FFFFFF"
-        />
-        <directionalLight
-          position={[-2.5, 2.0, -2.6]}
-          intensity={0.95}
-          color={config.rimLightColor}
-        />
-        <pointLight position={[0.4, 1.2, 2.2]} intensity={0.45} color="#E2E8F0" />
+          <ambientLight intensity={0.38} color="#CBD5E1" />
+          <directionalLight
+            position={[2.8, 4.2, 3.5]}
+            intensity={config.keyLightIntensity}
+            color="#FFFFFF"
+          />
+          <directionalLight
+            position={[-2.5, 2.0, -2.6]}
+            intensity={0.95}
+            color={config.rimLightColor}
+          />
+          <pointLight
+            position={[0.4, 1.2, 2.2]}
+            intensity={0.45}
+            color="#E2E8F0"
+          />
 
-        <Environment resolution={128}>
-          <mesh scale={15}>
-            <sphereGeometry args={[1, 16, 16]} />
-            <meshBasicMaterial color="#181C26" side={THREE.BackSide} />
-          </mesh>
-        </Environment>
+          <Environment resolution={128}>
+            <mesh scale={15}>
+              <sphereGeometry args={[1, 16, 16]} />
+              <meshBasicMaterial color="#181C26" side={THREE.BackSide} />
+            </mesh>
+          </Environment>
 
-        <Avatar3D
-          position={avatarPos}
-          scale={avatarScale}
-          targetYaw={config.avatarYaw}
-          reducedMotion={reducedMotion}
-        />
+          <Avatar3D
+            position={avatarPos}
+            scale={avatarScale}
+            targetYaw={config.avatarYaw}
+            reducedMotion={reducedMotion}
+          />
 
-        <ContactShadows
-          position={[avatarPos[0], avatarPos[1] - 0.25, avatarPos[2]]}
-          opacity={0.45}
-          scale={3.5}
-          blur={2.2}
-          far={2.5}
-        />
-      </Canvas>
-    </div>
+          <ContactShadows
+            position={[avatarPos[0], avatarPos[1] - 0.25, avatarPos[2]]}
+            opacity={0.45}
+            scale={3.5}
+            blur={2.2}
+            far={2.5}
+          />
+        </Canvas>
+      </div>
+    </CanvasErrorBoundary>
   );
 }
