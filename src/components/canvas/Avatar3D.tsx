@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, Component, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
 interface Avatar3DProps {
@@ -11,53 +10,6 @@ interface Avatar3DProps {
   position?: [number, number, number];
   scale?: number;
   reducedMotion?: boolean;
-}
-
-interface ErrorBoundaryProps {
-  children: ReactNode;
-  fallback: ReactNode;
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean;
-}
-
-class ModelErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true };
-  }
-
-  componentDidCatch() {
-    // Fallback handled gracefully by rendering the placeholder avatar
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
-function ExternalGlbModel({ url }: { url: string }) {
-  const { scene } = useGLTF(url);
-
-  useEffect(() => {
-    scene.traverse((obj) => {
-      if ((obj as THREE.Mesh).isMesh) {
-        const mesh = obj as THREE.Mesh;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-      }
-    });
-  }, [scene]);
-
-  return <primitive object={scene} />;
 }
 
 function StudioPlaceholderAvatar() {
@@ -198,10 +150,7 @@ function StudioPlaceholderAvatar() {
             <sphereGeometry args={[0.115, 28, 28]} />
             {neutralPlaceholderMaterial}
           </mesh>
-          <mesh
-            position={[0, 0.035, -0.012]}
-            castShadow
-          >
+          <mesh position={[0, 0.035, -0.012]} castShadow>
             <sphereGeometry
               args={[0.118, 28, 24, 0, Math.PI * 2, 0, Math.PI * 0.58]}
             />
@@ -214,7 +163,6 @@ function StudioPlaceholderAvatar() {
 }
 
 export default function Avatar3D({
-  modelUrl,
   targetYaw = 0,
   position = [1.15, -0.92, 0],
   scale = 1,
@@ -259,17 +207,9 @@ export default function Avatar3D({
     }
   });
 
-  const placeholder = <StudioPlaceholderAvatar />;
-
   return (
     <group ref={rootRef} position={position} scale={scale}>
-      {modelUrl ? (
-        <ModelErrorBoundary fallback={placeholder}>
-          <ExternalGlbModel url={modelUrl} />
-        </ModelErrorBoundary>
-      ) : (
-        placeholder
-      )}
+      <StudioPlaceholderAvatar />
     </group>
   );
 }
