@@ -746,19 +746,22 @@ export default function HomePage() {
           </FadeIn>
 
           <FadeIn delay={0.12} y={20} className="mt-6 sm:mt-8 text-center">
-            <div className="flex flex-col items-center gap-1 text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-[#D7E2EA]/80">
-              <span>Business Mindset</span>
-              <span>Digital Creativity</span>
+            <div className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-[#D7E2EA]/80">
+              <span>Getting to Know Me</span>
             </div>
           </FadeIn>
 
-          <div className="mt-8 sm:mt-10 md:mt-12 flex w-full max-w-[560px] flex-col gap-5 px-2 sm:px-0">
+          <div className="mt-8 sm:mt-10 md:mt-12 flex w-full max-w-[580px] flex-col gap-5 px-2 sm:px-0">
             <AnimatedText
-              text="I'm a business oriented professional with experience in sales, business operations, and digital solutions."
+              text="I'm a business-oriented professional with a growing interest in management, technology, and digital innovation."
               className="text-center text-base sm:text-lg font-medium leading-relaxed text-[#D7E2EA]"
             />
             <AnimatedText
-              text="I enjoy turning ideas into practical solutions through technology, combining business understanding with creativity to build digital tools that make work smarter and more efficient."
+              text="Currently pursuing a Bachelor's Degree in Management at Universitas INABA, I'm continuously developing my knowledge and skills in business management."
+              className="text-center text-base sm:text-lg font-medium leading-relaxed text-[#D7E2EA]"
+            />
+            <AnimatedText
+              text="With experience in sales, business operations, and business development, I also enjoy exploring digital technologies to create practical solutions for real-world business challenges"
               className="text-center text-base sm:text-lg font-medium leading-relaxed text-[#D7E2EA]"
             />
           </div>
