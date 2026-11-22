@@ -679,9 +679,9 @@ export default function HomePage() {
 
           <div className="mt-10 sm:mt-14 md:mt-16">
             <AnimatedText
-              text="With more than five years of experience in design, i focus on branding, web design, and user experience, i truly enjoy working with businesses that aim to stand out and present their best image. Let's build something incredible together!"
-              className="max-w-[560px] text-center font-medium leading-relaxed text-[#D7E2EA]"
-            />
+  text="I build web applications, operational workflows, and brand visuals that help businesses grow and stand out. Combining digital strategy, clean execution, and creative design -- let's build something impactful together!"
+  className="max-w-[560px] text-center font-medium leading-relaxed text-[#D7E2EA]"
+/>
           </div>
 
           <div className="mt-16 sm:mt-20 md:mt-24">
