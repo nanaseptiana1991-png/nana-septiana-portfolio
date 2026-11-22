@@ -735,14 +735,25 @@ export default function HomePage() {
             </h2>
           </FadeIn>
 
-          <div className="mt-10 sm:mt-14 md:mt-16">
+          <FadeIn delay={0.12} y={20} className="mt-6 sm:mt-8 text-center">
+            <div className="flex flex-col items-center gap-1 text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-[#D7E2EA]/80">
+              <span>Business Mindset</span>
+              <span>Digital Creativity</span>
+            </div>
+          </FadeIn>
+
+          <div className="mt-8 sm:mt-10 md:mt-12 flex flex-col gap-5">
             <AnimatedText
-              text="I build web applications, operational workflows, and brand visuals that help businesses grow and stand out. Combining digital strategy, clean execution, and creative design -- let's build something impactful together!"
+              text="I'm a business oriented professional with experience in sales, business operations, and digital solutions."
+              className="max-w-[560px] text-center font-medium leading-relaxed text-[#D7E2EA]"
+            />
+            <AnimatedText
+              text="I enjoy turning ideas into practical solutions through technology, combining business understanding with creativity to build digital tools that make work smarter and more efficient."
               className="max-w-[560px] text-center font-medium leading-relaxed text-[#D7E2EA]"
             />
           </div>
 
-          <div className="mt-16 sm:mt-20 md:mt-24">
+          <div className="mt-14 sm:mt-18 md:mt-20">
             <ContactButton onClick={() => handleOpenContactWithTopic()} />
           </div>
         </div>
