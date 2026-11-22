@@ -14,6 +14,7 @@ import {
   Sparkles,
   Mail,
   MessageCircle,
+  Maximize2,
 } from "lucide-react";
 
 const HERO_PORTRAIT_URL = "/images/Profil.png";
@@ -105,38 +106,45 @@ interface ProjectItem {
 const PROJECTS: ProjectItem[] = [
   {
     num: "01",
-    name: "AAK Operations & CRM System",
-    category: "Web App & Internal System",
+    name: "LION PARCEL RAMDAN OPERATION SYSTEM",
+    category: "FIELD OPS , TRACKER, ABSENSI",
     summary:
-      "Internal operations web app with role-based access, expedition workflows, leads & CRM pipeline, and KPI dashboards.",
-    url: "#contact",
-    col1Top: "/images/aak-1.png",
-    col1Bottom: "/images/aak-2.png",
-    col2Tall: "/images/aak-3.jpg",
-  },
-  {
-    num: "02",
-    name: "Lion Parcel & Interpack Ops",
-    category: "Partner Acquisition & Field Ops",
-    summary:
-      "Partner expansion, field activation, promotional campaign visuals, and multi-outlet operational tracking.",
-    url: "#contact",
+      "Sistem operasional, absensi, transaksi, validasi tracking, dan laporan",
+    url: "/images/lionparcel-3.jpg",
     col1Top: "/images/lionparcel-1.png",
     col1Bottom: "/images/lionparcel-2.png",
     col2Tall: "/images/lionparcel-3.jpg",
   },
   {
-    num: "03",
-    name: "Proucer Finder",
-    category: "Government & Private Procurement Leads",
+    num: "02",
+    name: "PROCURE FINDER",
+    category: "GOVERMENT & PRIVATE PROCUREMENT LEADS",
     summary:
-      "Aplikasi pencarian calon klien dan peluang pengadaan untuk sektor pemerintah maupun swasta.",
-    url: "#contact",
+      "Sistem operasional pencarian prospek bisnis dan peluang pengadaan",
+    url: "/images/procure%20finder-3.png",
     col1Top: "/images/proucer%20finder-1.jpg",
     col1Bottom: "/images/proucer%20finder-2.jpg",
     col2Tall: "/images/procure%20finder-3.png",
   },
+  {
+    num: "03",
+    name: "AAK COMPANY",
+    category: "WEB APP & INTERNAL SYSTEM",
+    summary:
+      "internal operations web app with role based access ,expedition workflows, leads & crm pipeline and kpi.",
+    url: "/images/aak-3.jpg",
+    col1Top: "/images/aak-1.png",
+    col1Bottom: "/images/aak-2.png",
+    col2Tall: "/images/aak-3.jpg",
+  },
 ];
+
+interface PreviewState {
+  projectName: string;
+  category: string;
+  images: { label: string; src: string }[];
+  activeIndex: number;
+}
 
 /* ------------------ REUSABLE COMPONENTS ------------------ */
 
@@ -348,7 +356,7 @@ interface ProjectCardProps {
   index: number;
   totalCards: number;
   containerScrollProgress: MotionValue<number>;
-  onOpenContact: (projectName: string) => void;
+  onOpenFullPreview: (project: ProjectItem, initialIndex?: number) => void;
 }
 
 function ProjectCard({
@@ -356,9 +364,9 @@ function ProjectCard({
   index,
   totalCards,
   containerScrollProgress,
-  onOpenContact,
+  onOpenFullPreview,
 }: ProjectCardProps) {
-  const targetScale = 1 - (totalCards - 1 - index) * 0.03;
+  const targetScale = 1 - (totalCards - 1 - index) * 0.025;
   const startRange = index / totalCards;
   const scale = useTransform(
     containerScrollProgress,
@@ -366,14 +374,22 @@ function ProjectCard({
     [1, targetScale]
   );
 
+  const isLastCard = index === totalCards - 1;
+
   return (
-    <div className="h-[85vh]">
+    <div
+      className={
+        isLastCard
+          ? "min-h-[105vh] pb-12"
+          : "min-h-[125vh] pb-28 sm:pb-36 md:pb-44"
+      }
+    >
       <motion.article
         style={{
           scale,
-          top: `${index * 28}px`,
+          top: `${28 + index * 24}px`,
         }}
-        className="sticky top-24 md:top-32 rounded-[40px] sm:rounded-[50px] md:rounded-[60px] border-2 border-[#D7E2EA] bg-[#0C0C0C] p-4 sm:p-6 md:p-8 shadow-2xl"
+        className="sticky rounded-[40px] sm:rounded-[50px] md:rounded-[60px] border-2 border-[#D7E2EA] bg-[#0C0C0C] p-5 sm:p-7 md:p-9 shadow-2xl"
       >
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-[#D7E2EA]/15 pb-5">
           <div className="flex items-center gap-4 sm:gap-6">
@@ -403,7 +419,7 @@ function ProjectCard({
             href={project.url}
             onClick={(e) => {
               e.preventDefault();
-              onOpenContact(project.name);
+              onOpenFullPreview(project, 2);
             }}
           />
         </div>
@@ -414,15 +430,17 @@ function ProjectCard({
               src={project.col1Top}
               alt={`${project.name} preview 1`}
               loading="lazy"
-              style={{ height: "clamp(130px, 16vw, 230px)" }}
-              className="w-full object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px]"
+              onClick={() => onOpenFullPreview(project, 0)}
+              style={{ height: "clamp(140px, 17vw, 240px)" }}
+              className="w-full cursor-pointer object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px] transition-opacity hover:opacity-90"
             />
             <img
               src={project.col1Bottom}
               alt={`${project.name} preview 2`}
               loading="lazy"
-              style={{ height: "clamp(160px, 22vw, 340px)" }}
-              className="w-full object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px]"
+              onClick={() => onOpenFullPreview(project, 1)}
+              style={{ height: "clamp(170px, 23vw, 350px)" }}
+              className="w-full cursor-pointer object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px] transition-opacity hover:opacity-90"
             />
           </div>
 
@@ -431,7 +449,8 @@ function ProjectCard({
               src={project.col2Tall}
               alt={`${project.name} showcase`}
               loading="lazy"
-              className="h-[280px] sm:h-[360px] md:h-full md:min-h-[360px] w-full object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px]"
+              onClick={() => onOpenFullPreview(project, 2)}
+              className="h-[300px] sm:h-[380px] md:h-full md:min-h-[380px] w-full cursor-pointer object-cover rounded-[40px] sm:rounded-[50px] md:rounded-[60px] transition-opacity hover:opacity-90"
             />
           </div>
         </div>
@@ -450,6 +469,7 @@ export default function HomePage() {
   const [row2Offset, setRow2Offset] = useState(0);
   const [contactOpen, setContactOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [previewState, setPreviewState] = useState<PreviewState | null>(null);
 
   const [senderName, setSenderName] = useState("");
   const [senderContact, setSenderContact] = useState("");
@@ -476,6 +496,19 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleOpenFullPreview = (project: ProjectItem, initialIndex = 2) => {
+    setPreviewState({
+      projectName: project.name,
+      category: project.category,
+      images: [
+        { label: "Foto 1", src: project.col1Top },
+        { label: "Foto 2", src: project.col1Bottom },
+        { label: "Foto Full Utama", src: project.col2Tall },
+      ],
+      activeIndex: initialIndex,
+    });
+  };
+
   const handleOpenContactWithTopic = (topic?: string) => {
     setSubmitted(false);
     if (topic) {
@@ -488,6 +521,10 @@ export default function HomePage() {
 
   const triRow1 = [...ROW_1_IMAGES, ...ROW_1_IMAGES, ...ROW_1_IMAGES];
   const triRow2 = [...ROW_2_IMAGES, ...ROW_2_IMAGES, ...ROW_2_IMAGES];
+
+  const currentPreviewImage = previewState
+    ? previewState.images[previewState.activeIndex]
+    : null;
 
   return (
     <main
@@ -791,7 +828,7 @@ export default function HomePage() {
               index={index}
               totalCards={PROJECTS.length}
               containerScrollProgress={projectsProgress}
-              onOpenContact={handleOpenContactWithTopic}
+              onOpenFullPreview={handleOpenFullPreview}
             />
           ))}
         </div>
@@ -828,6 +865,95 @@ export default function HomePage() {
           </div>
         </footer>
       </section>
+
+      {/* FULL IMAGE LIGHTBOX MODAL */}
+      {previewState && currentPreviewImage && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 sm:p-6 backdrop-blur-md"
+          onClick={() => setPreviewState(null)}
+        >
+          <div
+            className="relative flex w-full max-w-5xl flex-col gap-4 rounded-3xl border border-[#D7E2EA]/20 bg-[#121212] p-4 sm:p-6 text-[#D7E2EA] shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-[#D7E2EA]/10 pb-3">
+              <div>
+                <span className="text-[11px] uppercase tracking-widest text-[#D7E2EA]/60">
+                  {previewState.category}
+                </span>
+                <h3 className="text-lg sm:text-xl font-bold uppercase tracking-tight text-white">
+                  {previewState.projectName} — {currentPreviewImage.label}
+                </h3>
+              </div>
+
+              <button
+                type="button"
+                aria-label="Close full image preview"
+                onClick={() => setPreviewState(null)}
+                className="rounded-full p-2 text-[#D7E2EA]/75 transition hover:bg-white/10 hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex max-h-[68vh] w-full items-center justify-center overflow-auto rounded-2xl bg-[#0C0C0C] p-2">
+              <img
+                src={currentPreviewImage.src}
+                alt={`${previewState.projectName} ${currentPreviewImage.label}`}
+                className="max-h-[64vh] w-auto max-w-full rounded-xl object-contain"
+              />
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <div className="flex flex-wrap items-center gap-2">
+                {previewState.images.map((img, idx) => (
+                  <button
+                    key={img.label}
+                    type="button"
+                    onClick={() =>
+                      setPreviewState({ ...previewState, activeIndex: idx })
+                    }
+                    className={`rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-wider transition ${
+                      previewState.activeIndex === idx
+                        ? "bg-white text-[#0C0C0C]"
+                        : "border border-[#D7E2EA]/25 text-[#D7E2EA]/80 hover:bg-white/10"
+                    }`}
+                  >
+                    {img.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-3">
+                <a
+                  href={currentPreviewImage.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#D7E2EA]/30 px-4 py-2 text-xs uppercase tracking-wider text-[#D7E2EA] transition hover:bg-white/10"
+                >
+                  <Maximize2 className="h-3.5 w-3.5" />
+                  <span>Buka Tab Baru</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const topic = previewState.projectName;
+                    setPreviewState(null);
+                    handleOpenContactWithTopic(topic);
+                  }}
+                  className="rounded-full px-5 py-2 text-xs font-medium uppercase tracking-widest text-white"
+                  style={{
+                    background:
+                      "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
+                  }}
+                >
+                  Tanya via WA
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* CONTACT MODAL */}
       {contactOpen && (
