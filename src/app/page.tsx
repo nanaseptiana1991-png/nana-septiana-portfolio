@@ -55,6 +55,29 @@ const ROW_2_IMAGES = [
   "https://motionsites.ai/assets/hero-celestia-preview-0yO3jXO8.gif",
 ];
 
+const EXPERIENCES = [
+  {
+    company: "PT Empat Arah Kreasi",
+    role: "OSA · Lion Parcel",
+    period: "2025 – 2026",
+  },
+  {
+    company: "PT Banceuy Tunggal Jaya",
+    role: "Pharmaceutical Sales Representative",
+    period: "2024 – 2025",
+  },
+  {
+    company: "PT Borwita Citra Prima",
+    role: "Sales WSP",
+    period: "2023 – 2024",
+  },
+  {
+    company: "PT Artaboga Cemerlang",
+    role: "Sales · Duta Arta",
+    period: "2022 – 2023",
+  },
+];
+
 const SERVICES = [
   {
     name: "WEB & APP DEVELOPMENT",
@@ -546,25 +569,31 @@ export default function HomePage() {
         <FadeIn delay={0} y={-20} as="header">
           <nav
             aria-label="Primary Navigation"
-            className="flex w-full items-center justify-between px-6 md:px-10 pt-6 md:pt-8"
+            className="flex w-full flex-wrap items-center justify-between gap-2 px-4 sm:px-6 md:px-10 pt-6 md:pt-8"
           >
             <a
               href="#about"
-              className="text-sm md:text-lg lg:text-[1.4rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
+              className="text-[11px] sm:text-sm md:text-lg lg:text-[1.35rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
             >
               About
             </a>
             <a
-              href="#services"
-              className="text-sm md:text-lg lg:text-[1.4rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
+              href="#experience"
+              className="text-[11px] sm:text-sm md:text-lg lg:text-[1.35rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
             >
-              Service
+              Experience
             </a>
             <a
               href="#projects"
-              className="text-sm md:text-lg lg:text-[1.4rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
+              className="text-[11px] sm:text-sm md:text-lg lg:text-[1.35rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
             >
               Projects
+            </a>
+            <a
+              href="#services"
+              className="text-[11px] sm:text-sm md:text-lg lg:text-[1.35rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
+            >
+              Services
             </a>
             <a
               href="#contact"
@@ -572,7 +601,7 @@ export default function HomePage() {
                 e.preventDefault();
                 handleOpenContactWithTopic();
               }}
-              className="text-sm md:text-lg lg:text-[1.4rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
+              className="text-[11px] sm:text-sm md:text-lg lg:text-[1.35rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
             >
               Contact
             </a>
@@ -772,10 +801,95 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. SERVICES SECTION */}
+      {/* 4. PROFESSIONAL EXPERIENCE SECTION */}
+      <section
+        id="experience"
+        className="w-full rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] bg-[#FFFFFF] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32 text-[#0C0C0C]"
+      >
+        <FadeIn delay={0} y={30}>
+          <span className="mb-3 block text-center text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-[#0C0C0C]/60">
+            Career Journey
+          </span>
+          <h2
+            className="mb-14 sm:mb-20 md:mb-24 text-center font-black uppercase leading-none tracking-tight text-[#0C0C0C]"
+            style={{ fontSize: "clamp(2.2rem, 8.5vw, 120px)" }}
+          >
+            Professional Experience
+          </h2>
+        </FadeIn>
+
+        <div className="mx-auto max-w-4xl">
+          {EXPERIENCES.map((exp, i) => (
+            <FadeIn
+              key={`${exp.company}-${exp.period}`}
+              delay={i * 0.1}
+              y={24}
+              className="py-6 sm:py-8 md:py-10"
+            >
+              <div
+                style={{
+                  borderBottom:
+                    i < EXPERIENCES.length - 1
+                      ? "1px solid rgba(12, 12, 12, 0.15)"
+                      : "none",
+                }}
+                className="flex w-full flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-6 pb-6 sm:pb-8 md:pb-10"
+              >
+                <div className="flex flex-col gap-1.5">
+                  <h3
+                    className="font-bold uppercase tracking-tight text-[#0C0C0C]"
+                    style={{ fontSize: "clamp(1.2rem, 2.3vw, 2rem)" }}
+                  >
+                    {exp.company}
+                  </h3>
+                  <p
+                    className="font-medium text-[#0C0C0C]/75"
+                    style={{ fontSize: "clamp(0.95rem, 1.5vw, 1.25rem)" }}
+                  >
+                    {exp.role}
+                  </p>
+                </div>
+
+                <span className="inline-block self-start sm:self-center rounded-full border border-[#0C0C0C]/20 px-4 py-1.5 text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#0C0C0C]/80 shrink-0">
+                  {exp.period}
+                </span>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. PROJECTS SECTION */}
+      <section
+        ref={projectsSectionRef}
+        id="projects"
+        className="relative z-10 -mt-10 sm:-mt-12 md:-mt-14 w-full rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] bg-[#0C0C0C] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32 text-[#D7E2EA]"
+      >
+        <h2
+          className="hero-heading mb-16 sm:mb-20 md:mb-28 text-center font-black uppercase leading-none tracking-tight"
+          style={{ fontSize: "clamp(3rem, 12vw, 160px)" }}
+        >
+          Project
+        </h2>
+
+        <div className="mx-auto max-w-6xl">
+          {PROJECTS.map((project, index) => (
+            <ProjectCard
+              key={project.num}
+              project={project}
+              index={index}
+              totalCards={PROJECTS.length}
+              containerScrollProgress={projectsProgress}
+              onOpenFullPreview={handleOpenFullPreview}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* 6. SERVICES SECTION */}
       <section
         id="services"
-        className="w-full rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] bg-[#FFFFFF] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32 text-[#0C0C0C]"
+        className="relative z-20 -mt-10 sm:-mt-12 md:-mt-14 w-full rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] bg-[#FFFFFF] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32 text-[#0C0C0C]"
       >
         <h2
           className="mb-16 sm:mb-20 md:mb-28 text-center font-black uppercase leading-none tracking-tight text-[#0C0C0C]"
@@ -817,50 +931,23 @@ export default function HomePage() {
             </FadeIn>
           ))}
         </div>
-      </section>
-
-      {/* 5. PROJECTS SECTION */}
-      <section
-        ref={projectsSectionRef}
-        id="projects"
-        className="relative z-10 -mt-10 sm:-mt-12 md:-mt-14 w-full rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] bg-[#0C0C0C] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32 text-[#D7E2EA]"
-      >
-        <h2
-          className="hero-heading mb-16 sm:mb-20 md:mb-28 text-center font-black uppercase leading-none tracking-tight"
-          style={{ fontSize: "clamp(3rem, 12vw, 160px)" }}
-        >
-          Project
-        </h2>
-
-        <div className="mx-auto max-w-6xl">
-          {PROJECTS.map((project, index) => (
-            <ProjectCard
-              key={project.num}
-              project={project}
-              index={index}
-              totalCards={PROJECTS.length}
-              containerScrollProgress={projectsProgress}
-              onOpenFullPreview={handleOpenFullPreview}
-            />
-          ))}
-        </div>
 
         {/* Direct Social & Contact Footer */}
-        <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-4 border-t border-[#D7E2EA]/15 pt-8 text-xs sm:text-sm uppercase tracking-widest text-[#D7E2EA]/70">
+        <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-4 border-t border-[#0C0C0C]/15 pt-8 text-xs sm:text-sm uppercase tracking-widest text-[#0C0C0C]/70">
           <span>Nana Septiana — Web Systems &amp; Digital Creator</span>
           <div className="flex flex-wrap items-center gap-6">
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-[#0C0C0C]"
             >
               <MessageCircle className="h-4 w-4" />
               <span>WhatsApp</span>
             </a>
             <a
               href={`mailto:${EMAIL_ADDRESS}`}
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-[#0C0C0C]"
             >
               <Mail className="h-4 w-4" />
               <span>Email</span>
@@ -869,7 +956,7 @@ export default function HomePage() {
               href={TIKTOK_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-[#0C0C0C]"
             >
               <span>TikTok @nanaseptiana91</span>
               <ArrowUpRight className="h-4 w-4" />
