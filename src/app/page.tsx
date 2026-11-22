@@ -869,7 +869,7 @@ export default function HomePage() {
           onClick={() => setPreviewState(null)}
         >
           <div
-            className="relative flex w-full max-w-5xl flex-col gap-4 rounded-3xl border border-[#D7E2EA]/20 bg-[#121212] p-4 sm:p-6 text-[#D7E2EA] shadow-2xl"
+            className="relative flex max-h-[92vh] w-full max-w-5xl flex-col gap-4 overflow-y-auto rounded-3xl border border-[#D7E2EA]/20 bg-[#121212] p-4 sm:p-6 text-[#D7E2EA] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4 border-b border-[#D7E2EA]/10 pb-3">
@@ -955,14 +955,14 @@ export default function HomePage() {
       {contactOpen && (
         <div
           id="contact"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-4 backdrop-blur-sm"
           onClick={() => {
             setContactOpen(false);
             setSubmitted(false);
           }}
         >
           <div
-            className="relative w-full max-w-lg rounded-3xl border border-[#D7E2EA]/25 bg-[#121212] p-6 sm:p-8 text-[#D7E2EA] shadow-2xl"
+            className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-[#D7E2EA]/25 bg-[#121212] p-5 sm:p-8 text-[#D7E2EA] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
