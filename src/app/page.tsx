@@ -15,6 +15,8 @@ import {
   Mail,
   MessageCircle,
   Maximize2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const HERO_PORTRAIT_URL = "/images/Profil.png";
@@ -414,6 +416,177 @@ function LiveProjectButton({ href, onClick }: LiveProjectButtonProps) {
   );
 }
 
+/* ------------------ LAYERED STACK SHOWCASE ------------------ */
+
+interface LayeredShowcaseProps {
+  items: ShowcaseItem[];
+  activeIndex: number;
+  onSelectIndex: (index: number) => void;
+  onOpenLightbox: (item: ShowcaseItem) => void;
+}
+
+function LayeredShowcase({
+  items,
+  activeIndex,
+  onSelectIndex,
+  onOpenLightbox,
+}: LayeredShowcaseProps) {
+  const [isMobile, setIsMobile] = useState(false);
+  const dragStartX = useRef<number | null>(null);
+
+  useEffect(() => {
+    const checkViewport = () => setIsMobile(window.innerWidth < 640);
+    checkViewport();
+    window.addEventListener("resize", checkViewport, { passive: true });
+    return () => window.removeEventListener("resize", checkViewport);
+  }, []);
+
+  const total = items.length;
+
+  const handlePrev = () => {
+    onSelectIndex((activeIndex - 1 + total) % total);
+  };
+
+  const handleNext = () => {
+    onSelectIndex((activeIndex + 1) % total);
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    dragStartX.current = e.clientX;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStartX.current === null) return;
+    const deltaX = e.clientX - dragStartX.current;
+    dragStartX.current = null;
+
+    if (deltaX > 40) {
+      handlePrev();
+    } else if (deltaX < -40) {
+      handleNext();
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 sm:px-8 md:px-10">
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        className="relative flex h-[230px] sm:h-[300px] md:h-[340px] w-full select-none items-center justify-center touch-pan-y"
+      >
+        {items.map((item, idx) => {
+          let offset = idx - activeIndex;
+          const half = Math.floor(total / 2);
+          if (offset > half) offset -= total;
+          if (offset < -half) offset += total;
+
+          const absOffset = Math.abs(offset);
+          const isVisible = absOffset <= 3;
+
+          if (!isVisible) return null;
+
+          const stepX = isMobile ? 42 : 92;
+          const stepY = isMobile ? -7 : -14;
+          const translateX = offset * stepX;
+          const translateY = absOffset * stepY;
+          const scale =
+            offset === 0 ? 1 : Math.max(0.72, 1 - absOffset * 0.085);
+          const opacity =
+            offset === 0 ? 1 : Math.max(0.32, 0.88 - absOffset * 0.18);
+          const zIndex = 20 - absOffset * 4;
+
+          return (
+            <motion.div
+              key={item.src}
+              initial={false}
+              animate={{
+                x: translateX,
+                y: translateY,
+                scale,
+                opacity,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 26,
+              }}
+              style={{ zIndex }}
+              onClick={() => {
+                if (offset === 0) {
+                  onOpenLightbox(item);
+                } else {
+                  onSelectIndex(idx);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-label={item.label}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  if (offset === 0) onOpenLightbox(item);
+                  else onSelectIndex(idx);
+                }
+              }}
+              className={`absolute h-[165px] w-[245px] sm:h-[220px] sm:w-[340px] md:h-[250px] md:w-[390px] cursor-pointer overflow-hidden rounded-2xl border bg-[#121212] shadow-2xl ${
+                offset === 0
+                  ? "border-[#D7E2EA]/65 ring-1 ring-[#D7E2EA]/25"
+                  : "border-[#D7E2EA]/15 hover:border-[#D7E2EA]/35"
+              }`}
+            >
+              <img
+                src={item.src}
+                alt={item.label}
+                loading="eager"
+                draggable={false}
+                className="h-full w-full object-cover"
+              />
+              {offset !== 0 && (
+                <div className="pointer-events-none absolute inset-0 bg-[#0C0C0C]/35" />
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Kontrol gulir / geser & indikator posisi kartu */}
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-[#D7E2EA]/10 pt-4">
+        <div className="min-w-0">
+          <p className="truncate text-xs sm:text-sm font-medium text-[#D7E2EA]">
+            {items[activeIndex]?.label}
+          </p>
+          <p className="text-[11px] text-[#D7E2EA]/50">
+            Geser kartu, tekan panah, atau scroll halaman • Klik kartu tengah untuk zoom
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handlePrev}
+            aria-label="Previous system preview"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#D7E2EA]/25 bg-[#121212] text-[#D7E2EA] transition hover:border-[#D7E2EA]/60 hover:bg-white/10"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <span className="px-2 text-xs font-semibold tracking-widest text-[#D7E2EA]/75">
+            {String(activeIndex + 1).padStart(2, "0")} /{" "}
+            {String(total).padStart(2, "0")}
+          </span>
+          <button
+            type="button"
+            onClick={handleNext}
+            aria-label="Next system preview"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#D7E2EA]/25 bg-[#121212] text-[#D7E2EA] transition hover:border-[#D7E2EA]/60 hover:bg-white/10"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ------------------ STICKY PROJECT CARD ------------------ */
 
 interface ProjectCardProps {
@@ -529,9 +702,9 @@ function ProjectCard({
 export default function HomePage() {
   const showcaseSectionRef = useRef<HTMLElement>(null);
   const projectsSectionRef = useRef<HTMLElement>(null);
+  const lastScrollYRef = useRef(0);
 
-  // Pergerakan scroll halus & terkendali pada satu baris showcase proyek asli
-  const [showcaseOffset, setShowcaseOffset] = useState(-80);
+  const [activeShowcaseIdx, setActiveShowcaseIdx] = useState(0);
   const [contactOpen, setContactOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [previewState, setPreviewState] = useState<PreviewState | null>(null);
@@ -545,35 +718,32 @@ export default function HomePage() {
     offset: ["start start", "end end"],
   });
 
+  // Menggeser tumpukan kartu saat section masuk & di-scroll tanpa mengganggu scroll halaman
   useEffect(() => {
-    let rafId = 0;
+    lastScrollYRef.current = window.scrollY;
 
-    const updateOffset = () => {
+    const handleScroll = () => {
       const section = showcaseSectionRef.current;
-      if (!section) return;
+      const currentY = window.scrollY;
+      const deltaY = currentY - lastScrollYRef.current;
+      lastScrollYRef.current = currentY;
+
+      if (!section || Math.abs(deltaY) < 42) return;
 
       const rect = section.getBoundingClientRect();
       const viewportH = window.innerHeight || 800;
-      const progress = Math.min(
-        1,
-        Math.max(0, (viewportH - rect.top) / (viewportH + rect.height))
-      );
+      const isInView = rect.top < viewportH * 0.85 && rect.bottom > viewportH * 0.15;
 
-      // Gerak horizontal halus (-140px s/d -20px) agar tetap nyaman di layar mobile & desktop
-      setShowcaseOffset(-140 + progress * 120);
+      if (!isInView) return;
+
+      setActiveShowcaseIdx((prev) => {
+        const total = PROJECT_SHOWCASE_ITEMS.length;
+        return deltaY > 0 ? (prev + 1) % total : (prev - 1 + total) % total;
+      });
     };
 
-    const handleScroll = () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(updateOffset);
-    };
-
-    updateOffset();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleOpenFullPreview = (project: ProjectItem, initialIndex = 2) => {
@@ -598,11 +768,6 @@ export default function HomePage() {
     }
     setContactOpen(true);
   };
-
-  const repeatedShowcase = [
-    ...PROJECT_SHOWCASE_ITEMS,
-    ...PROJECT_SHOWCASE_ITEMS,
-  ];
 
   const currentPreviewImage = previewState
     ? previewState.images[previewState.activeIndex]
@@ -706,50 +871,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. SINGLE MOVING SHOWCASE (SCREENSHOT PROYEK ASLI SAJA) */}
+      {/* 2. SELECTED SYSTEM PREVIEW (LAYERED CARD STACK) */}
       <section
         ref={showcaseSectionRef}
         id="showcase"
-        aria-label="Project Screenshots Showcase"
+        aria-label="Selected System Preview"
         className="w-full bg-[#0C0C0C] pt-16 sm:pt-24 md:pt-28 pb-12 overflow-hidden"
       >
-        <div className="mx-auto mb-6 flex max-w-6xl items-center justify-between px-5 sm:px-8 md:px-10">
+        <div className="mx-auto mb-4 flex max-w-6xl items-center justify-between px-5 sm:px-8 md:px-10">
           <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#D7E2EA]/60">
-            Selected System Previews
+            Selected System Preview
           </span>
           <span className="text-[11px] sm:text-xs text-[#D7E2EA]/45">
-            Klik gambar untuk memperbesar
+            Geser / gulir untuk berpindah preview
           </span>
         </div>
 
-        <div
-          className="flex w-max gap-4 px-4 sm:px-6"
-          style={{
-            transform: `translate3d(${showcaseOffset}px, 0, 0)`,
-            willChange: "transform",
-          }}
-        >
-          {repeatedShowcase.map((item, idx) => (
-            <button
-              key={`showcase-${idx}-${item.src}`}
-              type="button"
-              onClick={() =>
-                handleOpenFullPreview(
-                  PROJECTS[item.projectIndex],
-                  item.previewIndex
-                )
-              }
-              className="group relative h-[180px] w-[290px] sm:h-[220px] sm:w-[360px] md:h-[245px] md:w-[400px] shrink-0 overflow-hidden rounded-2xl border border-[#D7E2EA]/15 bg-[#121212] text-left transition-colors hover:border-[#D7E2EA]/40"
-            >
-              <img
-                src={item.src}
-                alt={item.label}
-                loading={idx < 4 ? "eager" : "lazy"}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              />
-            </button>
-          ))}
-        </div>
+        <LayeredShowcase
+          items={PROJECT_SHOWCASE_ITEMS}
+          activeIndex={activeShowcaseIdx}
+          onSelectIndex={setActiveShowcaseIdx}
+          onOpenLightbox={(item) =>
+            handleOpenFullPreview(PROJECTS[item.projectIndex], item.previewIndex)
+          }
+        />
       </section>
 
       {/* 3. ABOUT SECTION */}
