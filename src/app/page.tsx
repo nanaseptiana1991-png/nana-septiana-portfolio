@@ -548,7 +548,7 @@ export default function HomePage() {
               href="#services"
               className="text-sm md:text-lg lg:text-[1.4rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
             >
-              Price
+              Service
             </a>
             <a
               href="#projects"
@@ -591,7 +591,7 @@ export default function HomePage() {
           >
             <img
               src={HERO_PORTRAIT_URL}
-              alt="Nana Septiana 3D Creator Portrait"
+              alt="Nana Septiana Digital & Web Systems Creator Portrait"
               className="w-full h-auto object-contain select-none"
             />
           </Magnet>
@@ -601,10 +601,10 @@ export default function HomePage() {
         <div className="relative z-20 flex w-full items-end justify-between px-6 md:px-10 pb-7 sm:pb-8 md:pb-10">
           <FadeIn delay={0.35} y={20}>
             <p
-              className="max-w-[160px] sm:max-w-[220px] md:max-w-[260px] font-light uppercase leading-snug tracking-wide text-[#D7E2EA]"
+              className="max-w-[180px] sm:max-w-[240px] md:max-w-[290px] font-light uppercase leading-snug tracking-wide text-[#D7E2EA]"
               style={{ fontSize: "clamp(0.75rem, 1.4vw, 1.5rem)" }}
             >
-              a 3d creator driven by crafting striking and unforgettable projects
+              building web systems, operational apps, and digital growth
             </p>
           </FadeIn>
 
@@ -831,7 +831,7 @@ export default function HomePage() {
 
         {/* Direct Social & Contact Footer */}
         <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-4 border-t border-[#D7E2EA]/15 pt-8 text-xs sm:text-sm uppercase tracking-widest text-[#D7E2EA]/70">
-          <span>Nana Septiana — 3D &amp; Digital Creator</span>
+          <span>Nana Septiana — Web Systems &amp; Digital Creator</span>
           <div className="flex flex-wrap items-center gap-6">
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
