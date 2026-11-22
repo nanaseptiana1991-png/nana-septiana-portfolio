@@ -256,7 +256,7 @@ function AnimatedChar({ char, index, total, progress }: AnimatedCharProps) {
   const opacity = useTransform(progress, [start, end], [0.2, 1]);
 
   return (
-    <span className="relative inline-block whitespace-pre">
+    <span className="relative inline-block">
       <span className="invisible">{char}</span>
       <motion.span
         style={{ opacity }}
@@ -277,22 +277,37 @@ function AnimatedText({ text, className = "" }: AnimatedTextProps) {
   const paragraphRef = useRef<HTMLParagraphElement>(null);
   const { scrollYProgress } = useScroll({
     target: paragraphRef,
-    offset: ["start 0.8", "end 0.2"],
+    offset: ["start 0.85", "end 0.25"],
   });
 
-  const chars = Array.from(text);
+  const words = text.split(" ");
+  const totalChars = text.length;
+  let runningIndex = 0;
 
   return (
     <p ref={paragraphRef} className={className}>
-      {chars.map((char, idx) => (
-        <AnimatedChar
-          key={`${idx}-${char}`}
-          char={char}
-          index={idx}
-          total={chars.length}
-          progress={scrollYProgress}
-        />
-      ))}
+      {words.map((word, wordIdx) => {
+        const wordChars = Array.from(word);
+        const startIdx = runningIndex;
+        runningIndex += wordChars.length + 1;
+
+        return (
+          <React.Fragment key={`word-${wordIdx}-${word}`}>
+            <span className="inline-block whitespace-nowrap">
+              {wordChars.map((char, charIdx) => (
+                <AnimatedChar
+                  key={`char-${startIdx + charIdx}`}
+                  char={char}
+                  index={startIdx + charIdx}
+                  total={totalChars}
+                  progress={scrollYProgress}
+                />
+              ))}
+            </span>
+            {wordIdx < words.length - 1 ? " " : ""}
+          </React.Fragment>
+        );
+      })}
     </p>
   );
 }
@@ -657,7 +672,7 @@ export default function HomePage() {
       {/* 3. ABOUT SECTION */}
       <section
         id="about"
-        className="relative flex min-h-screen w-full flex-col items-center justify-center bg-[#0C0C0C] px-5 sm:px-8 md:px-10 py-20"
+        className="relative flex min-h-screen w-full flex-col items-center justify-center bg-[#0C0C0C] px-6 sm:px-8 md:px-10 py-20"
       >
         {/* Corner 3D Decorative Props */}
         <FadeIn
@@ -720,7 +735,7 @@ export default function HomePage() {
           />
         </FadeIn>
 
-        <div className="relative z-10 flex flex-col items-center">
+        <div className="relative z-10 flex w-full flex-col items-center">
           <FadeIn delay={0} y={40}>
             <h2
               className="hero-heading text-center font-black uppercase leading-none tracking-tight"
@@ -737,14 +752,14 @@ export default function HomePage() {
             </div>
           </FadeIn>
 
-          <div className="mt-8 sm:mt-10 md:mt-12 flex flex-col gap-5">
+          <div className="mt-8 sm:mt-10 md:mt-12 flex w-full max-w-[560px] flex-col gap-5 px-2 sm:px-0">
             <AnimatedText
               text="I'm a business oriented professional with experience in sales, business operations, and digital solutions."
-              className="max-w-[560px] text-center font-medium leading-relaxed text-[#D7E2EA]"
+              className="text-center text-base sm:text-lg font-medium leading-relaxed text-[#D7E2EA]"
             />
             <AnimatedText
               text="I enjoy turning ideas into practical solutions through technology, combining business understanding with creativity to build digital tools that make work smarter and more efficient."
-              className="max-w-[560px] text-center font-medium leading-relaxed text-[#D7E2EA]"
+              className="text-center text-base sm:text-lg font-medium leading-relaxed text-[#D7E2EA]"
             />
           </div>
 
