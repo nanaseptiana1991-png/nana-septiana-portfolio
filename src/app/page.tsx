@@ -23,36 +23,72 @@ const WHATSAPP_NUMBER = "62895333818131";
 const EMAIL_ADDRESS = "nana.septiana1991@gmail.com";
 const TIKTOK_URL = "https://www.tiktok.com/@nanaseptiana91";
 
-const MOON_ICON_URL =
+// Satu aksen 3D dekoratif saja di sudut aman agar tidak memenuhi area teks
+const ACCENT_3D_URL =
   "https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png";
-const OBJECT_3D_URL =
-  "https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/p59_1.4659672e.png";
-const LEGO_ICON_URL =
-  "https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/lego_icon-1.703bb594.png";
-const GROUP_3D_URL =
-  "https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png";
 
-const ROW_1_IMAGES = [
-  "/images/lionparcel-1.png",
-  "https://motionsites.ai/assets/hero-codenest-preview-Cgppc2qV.gif",
-  "/images/proucer%20finder-1.jpg",
-  "https://motionsites.ai/assets/hero-transform-data-preview-Cx5OU29N.gif",
-  "/images/aak-1.png",
-  "https://motionsites.ai/assets/hero-stellar-ai-v2-preview-DjvxjG3C.gif",
-  "/images/lionparcel-2.png",
-  "/images/proucer%20finder-2.jpg",
-  "/images/aak-2.png",
-];
+interface ShowcaseItem {
+  src: string;
+  label: string;
+  projectIndex: number;
+  previewIndex: number;
+}
 
-const ROW_2_IMAGES = [
-  "https://motionsites.ai/assets/hero-space-voyage-preview-eECLH3Yc.gif",
-  "/images/procure%20finder-3.png",
-  "https://motionsites.ai/assets/hero-orbit-web3-preview-BXt4OttD.gif",
-  "/images/aak-3.jpg",
-  "https://motionsites.ai/assets/hero-nexora-preview-cx5HmUgo.gif",
-  "/images/lionparcel-3.jpg",
-  "https://motionsites.ai/assets/hero-luminex-preview-CxOP7ce6.gif",
-  "https://motionsites.ai/assets/hero-celestia-preview-0yO3jXO8.gif",
+const PROJECT_SHOWCASE_ITEMS: ShowcaseItem[] = [
+  {
+    src: "/images/lionparcel-1.png",
+    label: "Lion Parcel Ramadan Operation System — View 1",
+    projectIndex: 0,
+    previewIndex: 0,
+  },
+  {
+    src: "/images/lionparcel-2.png",
+    label: "Lion Parcel Ramadan Operation System — View 2",
+    projectIndex: 0,
+    previewIndex: 1,
+  },
+  {
+    src: "/images/lionparcel-3.jpg",
+    label: "Lion Parcel Ramadan Operation System — Overview",
+    projectIndex: 0,
+    previewIndex: 2,
+  },
+  {
+    src: "/images/proucer%20finder-1.jpg",
+    label: "Procure Finder — View 1",
+    projectIndex: 1,
+    previewIndex: 0,
+  },
+  {
+    src: "/images/proucer%20finder-2.jpg",
+    label: "Procure Finder — View 2",
+    projectIndex: 1,
+    previewIndex: 1,
+  },
+  {
+    src: "/images/procure%20finder-3.png",
+    label: "Procure Finder — Overview",
+    projectIndex: 1,
+    previewIndex: 2,
+  },
+  {
+    src: "/images/aak-1.png",
+    label: "AAK Company — View 1",
+    projectIndex: 2,
+    previewIndex: 0,
+  },
+  {
+    src: "/images/aak-2.png",
+    label: "AAK Company — View 2",
+    projectIndex: 2,
+    previewIndex: 1,
+  },
+  {
+    src: "/images/aak-3.jpg",
+    label: "AAK Company — Overview",
+    projectIndex: 2,
+    previewIndex: 2,
+  },
 ];
 
 const EXPERIENCES = [
@@ -491,11 +527,11 @@ function ProjectCard({
 /* ------------------ MAIN LANDING PAGE ------------------ */
 
 export default function HomePage() {
-  const marqueeSectionRef = useRef<HTMLElement>(null);
+  const showcaseSectionRef = useRef<HTMLElement>(null);
   const projectsSectionRef = useRef<HTMLElement>(null);
 
-  const [row1Offset, setRow1Offset] = useState(0);
-  const [row2Offset, setRow2Offset] = useState(0);
+  // Pergerakan scroll halus & terkendali pada satu baris showcase proyek asli
+  const [showcaseOffset, setShowcaseOffset] = useState(-80);
   const [contactOpen, setContactOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [previewState, setPreviewState] = useState<PreviewState | null>(null);
@@ -510,19 +546,34 @@ export default function HomePage() {
   });
 
   useEffect(() => {
-    const handleScroll = () => {
-      const section = marqueeSectionRef.current;
+    let rafId = 0;
+
+    const updateOffset = () => {
+      const section = showcaseSectionRef.current;
       if (!section) return;
 
-      const sectionTop = section.offsetTop;
-      const offset = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
-      setRow1Offset(offset - 200);
-      setRow2Offset(-(offset - 200));
+      const rect = section.getBoundingClientRect();
+      const viewportH = window.innerHeight || 800;
+      const progress = Math.min(
+        1,
+        Math.max(0, (viewportH - rect.top) / (viewportH + rect.height))
+      );
+
+      // Gerak horizontal halus (-140px s/d -20px) agar tetap nyaman di layar mobile & desktop
+      setShowcaseOffset(-140 + progress * 120);
     };
 
-    handleScroll();
+    const handleScroll = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateOffset);
+    };
+
+    updateOffset();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const handleOpenFullPreview = (project: ProjectItem, initialIndex = 2) => {
@@ -548,8 +599,10 @@ export default function HomePage() {
     setContactOpen(true);
   };
 
-  const triRow1 = [...ROW_1_IMAGES, ...ROW_1_IMAGES, ...ROW_1_IMAGES];
-  const triRow2 = [...ROW_2_IMAGES, ...ROW_2_IMAGES, ...ROW_2_IMAGES];
+  const repeatedShowcase = [
+    ...PROJECT_SHOWCASE_ITEMS,
+    ...PROJECT_SHOWCASE_ITEMS,
+  ];
 
   const currentPreviewImage = previewState
     ? previewState.images[previewState.activeIndex]
@@ -616,7 +669,7 @@ export default function HomePage() {
           </FadeIn>
         </div>
 
-        {/* Hero Portrait with Magnetic Hover */}
+        {/* Avatar 3D Utama dipertahankan */}
         <FadeIn
           delay={0.6}
           y={30}
@@ -653,48 +706,49 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. MARQUEE SECTION */}
+      {/* 2. SINGLE MOVING SHOWCASE (SCREENSHOT PROYEK ASLI SAJA) */}
       <section
-        ref={marqueeSectionRef}
-        id="marquee"
-        className="w-full bg-[#0C0C0C] pt-24 sm:pt-32 md:pt-40 pb-10 overflow-hidden"
+        ref={showcaseSectionRef}
+        id="showcase"
+        aria-label="Project Screenshots Showcase"
+        className="w-full bg-[#0C0C0C] pt-16 sm:pt-24 md:pt-28 pb-12 overflow-hidden"
       >
-        <div className="flex flex-col gap-3">
-          <div
-            className="flex w-max gap-3"
-            style={{
-              transform: `translate3d(${row1Offset}px, 0, 0)`,
-              willChange: "transform",
-            }}
-          >
-            {triRow1.map((src, idx) => (
-              <img
-                key={`r1-${idx}`}
-                src={src}
-                alt={`Portfolio & 3D showcase ${idx + 1}`}
-                loading="lazy"
-                className="h-[270px] w-[420px] shrink-0 rounded-2xl object-cover border border-[#D7E2EA]/10"
-              />
-            ))}
-          </div>
+        <div className="mx-auto mb-6 flex max-w-6xl items-center justify-between px-5 sm:px-8 md:px-10">
+          <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#D7E2EA]/60">
+            Selected System Previews
+          </span>
+          <span className="text-[11px] sm:text-xs text-[#D7E2EA]/45">
+            Klik gambar untuk memperbesar
+          </span>
+        </div>
 
-          <div
-            className="flex w-max gap-3"
-            style={{
-              transform: `translate3d(${row2Offset}px, 0, 0)`,
-              willChange: "transform",
-            }}
-          >
-            {triRow2.map((src, idx) => (
+        <div
+          className="flex w-max gap-4 px-4 sm:px-6"
+          style={{
+            transform: `translate3d(${showcaseOffset}px, 0, 0)`,
+            willChange: "transform",
+          }}
+        >
+          {repeatedShowcase.map((item, idx) => (
+            <button
+              key={`showcase-${idx}-${item.src}`}
+              type="button"
+              onClick={() =>
+                handleOpenFullPreview(
+                  PROJECTS[item.projectIndex],
+                  item.previewIndex
+                )
+              }
+              className="group relative h-[180px] w-[290px] sm:h-[220px] sm:w-[360px] md:h-[245px] md:w-[400px] shrink-0 overflow-hidden rounded-2xl border border-[#D7E2EA]/15 bg-[#121212] text-left transition-colors hover:border-[#D7E2EA]/40"
+            >
               <img
-                key={`r2-${idx}`}
-                src={src}
-                alt={`System & 3D preview ${idx + 1}`}
-                loading="lazy"
-                className="h-[270px] w-[420px] shrink-0 rounded-2xl object-cover border border-[#D7E2EA]/10"
+                src={item.src}
+                alt={item.label}
+                loading={idx < 4 ? "eager" : "lazy"}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
-            ))}
-          </div>
+            </button>
+          ))}
         </div>
       </section>
 
@@ -703,62 +757,17 @@ export default function HomePage() {
         id="about"
         className="relative flex min-h-screen w-full flex-col items-center justify-center bg-[#0C0C0C] px-6 sm:px-8 md:px-10 py-20"
       >
-        {/* Corner 3D Decorative Props */}
-        <FadeIn
-          delay={0.1}
-          x={-80}
-          y={0}
-          duration={0.9}
-          className="pointer-events-none absolute top-[4%] left-[1%] sm:left-[2%] md:left-[4%] w-[120px] sm:w-[160px] md:w-[210px]"
-        >
-          <img
-            src={MOON_ICON_URL}
-            alt="3D Moon Icon"
-            loading="lazy"
-            className="w-full h-auto object-contain"
-          />
-        </FadeIn>
-
-        <FadeIn
-          delay={0.25}
-          x={-80}
-          y={0}
-          duration={0.9}
-          className="pointer-events-none absolute bottom-[8%] left-[3%] sm:left-[6%] md:left-[10%] w-[100px] sm:w-[140px] md:w-[180px]"
-        >
-          <img
-            src={OBJECT_3D_URL}
-            alt="3D Sculptural Object"
-            loading="lazy"
-            className="w-full h-auto object-contain"
-          />
-        </FadeIn>
-
+        {/* Satu aksen 3D di pojok kiri atas dengan ukuran proporsional */}
         <FadeIn
           delay={0.15}
-          x={80}
+          x={-40}
           y={0}
-          duration={0.9}
-          className="pointer-events-none absolute top-[4%] right-[1%] sm:right-[2%] md:right-[4%] w-[120px] sm:w-[160px] md:w-[210px]"
+          duration={0.8}
+          className="pointer-events-none absolute top-8 left-4 sm:top-10 sm:left-8 w-[64px] sm:w-[90px] md:w-[115px] opacity-80"
         >
           <img
-            src={LEGO_ICON_URL}
-            alt="3D Brick Icon"
-            loading="lazy"
-            className="w-full h-auto object-contain"
-          />
-        </FadeIn>
-
-        <FadeIn
-          delay={0.3}
-          x={80}
-          y={0}
-          duration={0.9}
-          className="pointer-events-none absolute bottom-[8%] right-[3%] sm:right-[6%] md:right-[10%] w-[130px] sm:w-[170px] md:w-[220px]"
-        >
-          <img
-            src={GROUP_3D_URL}
-            alt="3D Composition Group"
+            src={ACCENT_3D_URL}
+            alt="Minimal 3D Accent"
             loading="lazy"
             className="w-full h-auto object-contain"
           />
