@@ -32,32 +32,28 @@ const LEGO_ICON_URL =
 const GROUP_3D_URL =
   "https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png";
 
-const MARQUEE_GIFS = [
-  "https://motionsites.ai/assets/hero-space-voyage-preview-eECLH3Yc.gif",
+const ROW_1_IMAGES = [
+  "/images/lionparcel-1.png",
   "https://motionsites.ai/assets/hero-codenest-preview-Cgppc2qV.gif",
-  "https://motionsites.ai/assets/hero-vex-ventures-preview-BczMFIiw.gif",
-  "https://motionsites.ai/assets/hero-stellar-ai-v2-preview-DjvxjG3C.gif",
-  "https://motionsites.ai/assets/hero-asme-preview-B_nGDnTP.gif",
+  "/images/proucer%20finder-1.jpg",
   "https://motionsites.ai/assets/hero-transform-data-preview-Cx5OU29N.gif",
-  "https://motionsites.ai/assets/hero-vitara-preview-Cjz2QYyU.gif",
-  "https://motionsites.ai/assets/hero-terra-preview-BFjrCr7T.gif",
-  "https://motionsites.ai/assets/hero-skyelite-preview-DHaZIgUv.gif",
-  "https://motionsites.ai/assets/hero-aethera-preview-DknSlcTa.gif",
-  "https://motionsites.ai/assets/hero-designpro-preview-D8c5_een.gif",
-  "https://motionsites.ai/assets/hero-stellar-ai-preview-D3HL6bw1.gif",
-  "https://motionsites.ai/assets/hero-xportfolio-preview-D4A8maiC.gif",
+  "/images/aak-1.png",
+  "https://motionsites.ai/assets/hero-stellar-ai-v2-preview-DjvxjG3C.gif",
+  "/images/lionparcel-2.png",
+  "/images/proucer%20finder-2.jpg",
+  "/images/aak-2.png",
+];
+
+const ROW_2_IMAGES = [
+  "https://motionsites.ai/assets/hero-space-voyage-preview-eECLH3Yc.gif",
+  "/images/procure%20finder-3.png",
   "https://motionsites.ai/assets/hero-orbit-web3-preview-BXt4OttD.gif",
+  "/images/aak-3.jpg",
   "https://motionsites.ai/assets/hero-nexora-preview-cx5HmUgo.gif",
-  "https://motionsites.ai/assets/hero-evr-ventures-preview-DZxeVFEX.gif",
-  "https://motionsites.ai/assets/hero-planet-orbit-preview-DWAP8Z1P.gif",
-  "https://motionsites.ai/assets/hero-new-era-preview-CocuDUm9.gif",
-  "https://motionsites.ai/assets/hero-wealth-preview-B70idl_u.gif",
+  "/images/lionparcel-3.jpg",
   "https://motionsites.ai/assets/hero-luminex-preview-CxOP7ce6.gif",
   "https://motionsites.ai/assets/hero-celestia-preview-0yO3jXO8.gif",
 ];
-
-const ROW_1_IMAGES = MARQUEE_GIFS.slice(0, 11);
-const ROW_2_IMAGES = MARQUEE_GIFS.slice(11, 21);
 
 const SERVICES = [
   {
@@ -636,9 +632,9 @@ export default function HomePage() {
               <img
                 key={`r1-${idx}`}
                 src={src}
-                alt={`3D showcase work ${idx + 1}`}
+                alt={`Portfolio & 3D showcase ${idx + 1}`}
                 loading="lazy"
-                className="h-[270px] w-[420px] shrink-0 rounded-2xl object-cover"
+                className="h-[270px] w-[420px] shrink-0 rounded-2xl object-cover border border-[#D7E2EA]/10"
               />
             ))}
           </div>
@@ -654,9 +650,9 @@ export default function HomePage() {
               <img
                 key={`r2-${idx}`}
                 src={src}
-                alt={`3D motion preview ${idx + 1}`}
+                alt={`System & 3D preview ${idx + 1}`}
                 loading="lazy"
-                className="h-[270px] w-[420px] shrink-0 rounded-2xl object-cover"
+                className="h-[270px] w-[420px] shrink-0 rounded-2xl object-cover border border-[#D7E2EA]/10"
               />
             ))}
           </div>
