@@ -7,10 +7,21 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { X, ArrowUpRight, CheckCircle2, Sparkles } from "lucide-react";
+import {
+  X,
+  ArrowUpRight,
+  CheckCircle2,
+  Sparkles,
+  Mail,
+  MessageCircle,
+} from "lucide-react";
 
 const HERO_PORTRAIT_URL =
   "https://raw.githubusercontent.com/nanaseptiana1991-png/nana-septiana-portfolio/main/Picture.png";
+
+const WHATSAPP_NUMBER = "62895333818131";
+const EMAIL_ADDRESS = "nana.septiana1991@gmail.com";
+const TIKTOK_URL = "https://www.tiktok.com/@nanaseptiana91";
 
 const MOON_ICON_URL =
   "https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/moon_icon.11395d36.png";
@@ -51,33 +62,33 @@ const ROW_2_IMAGES = MARQUEE_GIFS.slice(11, 21);
 const SERVICES = [
   {
     num: "01",
-    name: "3D Modeling",
+    name: "Web & App Systems",
     description:
-      "Creation of detailed objects, characters, or environments tailored to specific client needs, ideal for games, products, and visualizations.",
+      "Building responsive web interfaces and internal operational applications tailored to streamline workflows, roles, and reporting.",
   },
   {
     num: "02",
-    name: "Rendering",
+    name: "Digital Marketing",
     description:
-      "High-quality, photorealistic renders that showcase designs with custom lighting, textures, and materials to bring concepts to life.",
+      "Designing partner acquisition flows, WhatsApp outreach campaigns, and promotional assets that drive measurable business growth.",
   },
   {
     num: "03",
-    name: "Motion Design",
+    name: "Branding & Visuals",
     description:
-      "Dynamic animations and motion graphics that add energy and storytelling to brands, products, and digital experiences.",
+      "Crafting cohesive visual identities -- from commercial promotional posters and presentation decks to full digital brand systems.",
   },
   {
     num: "04",
-    name: "Branding",
+    name: "3D & Motion Design",
     description:
-      "Crafting cohesive visual identities -- from logos to full brand systems -- that communicate a clear and memorable presence.",
+      "Interactive 3D elements, visual mockups, and dynamic motion graphics that add depth and energy to modern digital experiences.",
   },
   {
     num: "05",
-    name: "Web Design",
+    name: "Data & Workflow Ops",
     description:
-      "Designing clean, modern, and conversion-focused websites with attention to layout, typography, and user experience.",
+      "Structuring multi-sheet data reconciliation, field mapping, and KPI tracking systems for accurate operational visibility.",
   },
 ];
 
@@ -340,7 +351,7 @@ interface ProjectCardProps {
   index: number;
   totalCards: number;
   containerScrollProgress: MotionValue<number>;
-  onOpenContact: () => void;
+  onOpenContact: (projectName: string) => void;
 }
 
 function ProjectCard({
@@ -392,7 +403,7 @@ function ProjectCard({
             href={project.url}
             onClick={(e) => {
               e.preventDefault();
-              onOpenContact();
+              onOpenContact(project.name);
             }}
           />
         </div>
@@ -440,6 +451,10 @@ export default function HomePage() {
   const [contactOpen, setContactOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const [senderName, setSenderName] = useState("");
+  const [senderContact, setSenderContact] = useState("");
+  const [projectDetails, setProjectDetails] = useState("");
+
   const { scrollYProgress: projectsProgress } = useScroll({
     target: projectsSectionRef,
     offset: ["start start", "end end"],
@@ -460,6 +475,14 @@ export default function HomePage() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleOpenContactWithTopic = (topic?: string) => {
+    setSubmitted(false);
+    if (topic) {
+      setProjectDetails(`Saya tertarik untuk melihat demo atau berdiskusi tentang proyek "${topic}".`);
+    }
+    setContactOpen(true);
+  };
 
   const triRow1 = [...ROW_1_IMAGES, ...ROW_1_IMAGES, ...ROW_1_IMAGES];
   const triRow2 = [...ROW_2_IMAGES, ...ROW_2_IMAGES, ...ROW_2_IMAGES];
@@ -502,7 +525,7 @@ export default function HomePage() {
               href="#contact"
               onClick={(e) => {
                 e.preventDefault();
-                setContactOpen(true);
+                handleOpenContactWithTopic();
               }}
               className="text-sm md:text-lg lg:text-[1.4rem] font-medium uppercase tracking-wider text-[#D7E2EA] transition-opacity duration-200 hover:opacity-70"
             >
@@ -551,7 +574,7 @@ export default function HomePage() {
           </FadeIn>
 
           <FadeIn delay={0.5} y={20}>
-            <ContactButton onClick={() => setContactOpen(true)} />
+            <ContactButton onClick={() => handleOpenContactWithTopic()} />
           </FadeIn>
         </div>
       </section>
@@ -679,13 +702,13 @@ export default function HomePage() {
 
           <div className="mt-10 sm:mt-14 md:mt-16">
             <AnimatedText
-  text="I build web applications, operational workflows, and brand visuals that help businesses grow and stand out. Combining digital strategy, clean execution, and creative design -- let's build something impactful together!"
-  className="max-w-[560px] text-center font-medium leading-relaxed text-[#D7E2EA]"
-/>
+              text="I build web applications, operational workflows, and brand visuals that help businesses grow and stand out. Combining digital strategy, clean execution, and creative design -- let's build something impactful together!"
+              className="max-w-[560px] text-center font-medium leading-relaxed text-[#D7E2EA]"
+            />
           </div>
 
           <div className="mt-16 sm:mt-20 md:mt-24">
-            <ContactButton onClick={() => setContactOpen(true)} />
+            <ContactButton onClick={() => handleOpenContactWithTopic()} />
           </div>
         </div>
       </section>
@@ -766,10 +789,42 @@ export default function HomePage() {
               index={index}
               totalCards={PROJECTS.length}
               containerScrollProgress={projectsProgress}
-              onOpenContact={() => setContactOpen(true)}
+              onOpenContact={handleOpenContactWithTopic}
             />
           ))}
         </div>
+
+        {/* Direct Social & Contact Footer */}
+        <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-4 border-t border-[#D7E2EA]/15 pt-8 text-xs sm:text-sm uppercase tracking-widest text-[#D7E2EA]/70">
+          <span>Nana Septiana — 3D &amp; Digital Creator</span>
+          <div className="flex flex-wrap items-center gap-6">
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>WhatsApp</span>
+            </a>
+            <a
+              href={`mailto:${EMAIL_ADDRESS}`}
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+            >
+              <Mail className="h-4 w-4" />
+              <span>Email</span>
+            </a>
+            <a
+              href={TIKTOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-white"
+            >
+              <span>TikTok @nanaseptiana91</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
+          </div>
+        </footer>
       </section>
 
       {/* CONTACT MODAL */}
@@ -800,29 +855,44 @@ export default function HomePage() {
 
             <div className="mb-6 flex items-center gap-2 text-xs uppercase tracking-widest text-[#D7E2EA]/60">
               <Sparkles className="h-4 w-4 text-[#B600A8]" />
-              <span>Nana Septiana — 3D Creator</span>
+              <span>Nana Septiana — Direct Contact</span>
             </div>
 
             {submitted ? (
               <div className="py-8 text-center">
                 <CheckCircle2 className="mx-auto mb-3 h-12 w-12 text-emerald-400" />
                 <h3 className="text-xl font-semibold uppercase tracking-wide text-white">
-                  Message Sent
+                  Opening WhatsApp...
                 </h3>
                 <p className="mt-2 text-sm text-[#D7E2EA]/75">
-                  Thank you for reaching out. Nana Septiana will reply soon.
+                  Your message has been prepared for Nana Septiana ({EMAIL_ADDRESS}).
                 </p>
               </div>
             ) : (
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
+
+                  const message = [
+                    `Halo Nana, saya *${senderName}* ingin berdiskusi mengenai proyek.`,
+                    `Kontak: ${senderContact}`,
+                    `Detail Proyek: ${projectDetails}`,
+                  ].join("\n");
+
+                  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                    message
+                  )}`;
+
+                  window.open(waUrl, "_blank", "noopener,noreferrer");
                   setSubmitted(true);
+                  setSenderName("");
+                  setSenderContact("");
+                  setProjectDetails("");
                 }}
                 className="flex flex-col gap-4"
               >
                 <h3 className="text-2xl font-bold uppercase tracking-tight text-white">
-                  Start a 3D Project
+                  Start a Project
                 </h3>
                 <div>
                   <label className="mb-1 block text-xs uppercase tracking-wider text-[#D7E2EA]/70">
@@ -831,6 +901,8 @@ export default function HomePage() {
                   <input
                     type="text"
                     required
+                    value={senderName}
+                    onChange={(e) => setSenderName(e.target.value)}
                     placeholder="Enter your name"
                     className="w-full rounded-xl border border-[#D7E2EA]/20 bg-[#0C0C0C] px-4 py-3 text-sm text-white outline-none focus:border-[#B600A8]"
                   />
@@ -842,6 +914,8 @@ export default function HomePage() {
                   <input
                     type="text"
                     required
+                    value={senderContact}
+                    onChange={(e) => setSenderContact(e.target.value)}
                     placeholder="name@email.com or +62..."
                     className="w-full rounded-xl border border-[#D7E2EA]/20 bg-[#0C0C0C] px-4 py-3 text-sm text-white outline-none focus:border-[#B600A8]"
                   />
@@ -853,10 +927,33 @@ export default function HomePage() {
                   <textarea
                     rows={3}
                     required
-                    placeholder="Tell us about your 3D modeling, rendering, motion, or web project..."
+                    value={projectDetails}
+                    onChange={(e) => setProjectDetails(e.target.value)}
+                    placeholder="Tell us about your web app, 3D visual, branding, or campaign project..."
                     className="w-full rounded-xl border border-[#D7E2EA]/20 bg-[#0C0C0C] px-4 py-3 text-sm text-white outline-none focus:border-[#B600A8]"
                   />
                 </div>
+
+                {/* Direct Email & TikTok Shortcuts */}
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#D7E2EA]/10 pt-3 text-xs text-[#D7E2EA]/70">
+                  <a
+                    href={`mailto:${EMAIL_ADDRESS}`}
+                    className="inline-flex items-center gap-1.5 hover:text-white"
+                  >
+                    <Mail className="h-3.5 w-3.5" />
+                    <span>{EMAIL_ADDRESS}</span>
+                  </a>
+                  <a
+                    href={TIKTOK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 hover:text-white"
+                  >
+                    <span>TikTok: @nanaseptiana91</span>
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+
                 <div className="mt-2 flex justify-end">
                   <button
                     type="submit"
@@ -870,7 +967,7 @@ export default function HomePage() {
                       outlineOffset: "-3px",
                     }}
                   >
-                    Send Inquiry
+                    Send via WhatsApp
                   </button>
                 </div>
               </form>
