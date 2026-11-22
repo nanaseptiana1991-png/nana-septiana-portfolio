@@ -57,34 +57,29 @@ const ROW_2_IMAGES = [
 
 const SERVICES = [
   {
-    num: "01",
-    name: "Web & App Systems",
+    name: "WEB & APP DEVELOPMENT",
     description:
-      "Building responsive web interfaces and internal operational applications tailored to streamline workflows, roles, and reporting.",
+      "Developing responsive websites, business applications, and custom digital systems to simplify business processes and improve operational efficiency.",
   },
   {
-    num: "02",
-    name: "Digital Marketing",
+    name: "BUSINESS & SALES SUPPORT",
     description:
-      "Designing partner acquisition flows, WhatsApp outreach campaigns, and promotional assets that drive measurable business growth.",
+      "Supporting business growth through lead generation, partner acquisition, sales coordination, customer outreach, and business development activities.",
   },
   {
-    num: "03",
-    name: "Branding & Visuals",
+    name: "DATA & SPREADSHEET MANAGEMENT",
     description:
-      "Crafting cohesive visual identities -- from commercial promotional posters and presentation decks to full digital brand systems.",
+      "Creating structured Google Sheets and Excel solutions, automated formulas, tracking systems, and dashboards for better data management and reporting.",
   },
   {
-    num: "04",
-    name: "3D & Motion Design",
+    name: "DIGITAL MARKETING & PROMOTIONAL DESIGN",
     description:
-      "Interactive 3D elements, visual mockups, and dynamic motion graphics that add depth and energy to modern digital experiences.",
+      "Creating promotional materials, campaign assets, WhatsApp outreach strategies, and digital marketing support for business visibility and customer engagement.",
   },
   {
-    num: "05",
-    name: "Data & Workflow Ops",
+    name: "BUSINESS OPERATIONS & WORKFLOW",
     description:
-      "Structuring multi-sheet data reconciliation, field mapping, and KPI tracking systems for accurate operational visibility.",
+      "Organizing operational workflows, project tracking, data validation, team coordination, and reporting systems to support efficient business operations.",
   },
 ];
 
@@ -771,13 +766,13 @@ export default function HomePage() {
           Services
         </h2>
 
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-4xl">
           {SERVICES.map((service, i) => (
             <FadeIn
-              key={service.num}
+              key={service.name}
               delay={i * 0.1}
               y={24}
-              className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 md:gap-12 py-8 sm:py-10 md:py-12"
+              className="py-8 sm:py-10 md:py-12"
             >
               <div
                 style={{
@@ -786,28 +781,20 @@ export default function HomePage() {
                       ? "1px solid rgba(12, 12, 12, 0.15)"
                       : "none",
                 }}
-                className="flex w-full flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 md:gap-12 pb-8 sm:pb-10 md:pb-12"
+                className="flex w-full flex-col gap-3 pb-8 sm:pb-10 md:pb-12"
               >
-                <span
-                  className="font-black leading-none text-[#0C0C0C] shrink-0"
-                  style={{ fontSize: "clamp(3rem, 10vw, 140px)" }}
+                <h3
+                  className="font-bold uppercase tracking-tight text-[#0C0C0C]"
+                  style={{ fontSize: "clamp(1.25rem, 2.5vw, 2.25rem)" }}
                 >
-                  {service.num}
-                </span>
-                <div className="flex flex-col gap-2">
-                  <h3
-                    className="font-medium uppercase text-[#0C0C0C]"
-                    style={{ fontSize: "clamp(1rem, 2.2vw, 2.1rem)" }}
-                  >
-                    {service.name}
-                  </h3>
-                  <p
-                    className="max-w-2xl font-light leading-relaxed text-[#0C0C0C] opacity-60"
-                    style={{ fontSize: "clamp(0.85rem, 1.6vw, 1.25rem)" }}
-                  >
-                    {service.description}
-                  </p>
-                </div>
+                  {service.name}
+                </h3>
+                <p
+                  className="max-w-3xl font-light leading-relaxed text-[#0C0C0C] opacity-75"
+                  style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.2rem)" }}
+                >
+                  {service.description}
+                </p>
               </div>
             </FadeIn>
           ))}
