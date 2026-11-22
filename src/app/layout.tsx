@@ -10,24 +10,29 @@ const kanit = Kanit({
 });
 
 export const metadata: Metadata = {
-  title: "Nana Septiana — 3D & Digital Creator",
+  title: "Nana Septiana — Web Systems & Digital Creator",
   description:
     "Portfolio of Nana Septiana — web & internal operational systems, government & private procurement leads, digital marketing, branding, and 3D visual experiences.",
+  icons: {
+    icon: "/images/Profil.png",
+    shortcut: "/images/Profil.png",
+    apple: "/images/Profil.png",
+  },
   openGraph: {
-    title: "Nana Septiana — 3D & Digital Creator",
+    title: "Nana Septiana — Web Systems & Digital Creator",
     description:
       "Explore operational web systems, procurement lead tools, digital campaigns, and 3D creative portfolio by Nana Septiana.",
     type: "website",
     images: [
       {
         url: "/images/Profil.png",
-        alt: "Nana Septiana — 3D & Digital Creator",
+        alt: "Nana Septiana — Web Systems & Digital Creator",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nana Septiana — 3D & Digital Creator",
+    title: "Nana Septiana — Web Systems & Digital Creator",
     description:
       "Web & internal operational systems, procurement leads, digital marketing, and 3D creative portfolio by Nana Septiana.",
     images: ["/images/Profil.png"],
