@@ -16,8 +16,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 
-const HERO_PORTRAIT_URL =
-  "https://raw.githubusercontent.com/nanaseptiana1991-png/nana-septiana-portfolio/main/Picture.png";
+const HERO_PORTRAIT_URL = "/images/Profil.png";
 
 const WHATSAPP_NUMBER = "62895333818131";
 const EMAIL_ADDRESS = "nana.septiana1991@gmail.com";
@@ -96,6 +95,7 @@ interface ProjectItem {
   num: string;
   name: string;
   category: string;
+  summary: string;
   url: string;
   col1Top: string;
   col1Bottom: string;
@@ -107,37 +107,34 @@ const PROJECTS: ProjectItem[] = [
     num: "01",
     name: "AAK Operations & CRM System",
     category: "Web App & Internal System",
+    summary:
+      "Internal operations web app with role-based access, expedition workflows, leads & CRM pipeline, and KPI dashboards.",
     url: "#contact",
-    col1Top:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055344_5eff02e0-87a5-41ce-b64f-eb08da8f33db.png&w=1280&q=85",
-    col1Bottom:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055431_11d841fd-8b41-46a5-82e4-b04f2407a7d8.png&w=1280&q=85",
-    col2Tall:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055451_e317bf2d-28d4-48cc-86b0-6f72f25b6327.png&w=1280&q=85",
+    col1Top: "/images/aak-1.png",
+    col1Bottom: "/images/aak-2.png",
+    col2Tall: "/images/aak-3.jpg",
   },
   {
     num: "02",
-    name: "Interpack 165 POS Network",
-    category: "Field Activation & Data Mapping",
+    name: "Lion Parcel & Interpack Ops",
+    category: "Partner Acquisition & Field Ops",
+    summary:
+      "Partner expansion, field activation, promotional campaign visuals, and multi-outlet operational tracking.",
     url: "#contact",
-    col1Top:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055654_911201c5-36d9-4bc6-bac7-331adfce159f.png&w=1280&q=85",
-    col1Bottom:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055723_5ceda0b8-d9c2-4665-b2e3-83ba19ba76d1.png&w=1280&q=85",
-    col2Tall:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055753_adc5dcbd-a8e6-49c0-b43a-9b030d835cea.png&w=1280&q=85",
+    col1Top: "/images/lionparcel-1.png",
+    col1Bottom: "/images/lionparcel-2.png",
+    col2Tall: "/images/lionparcel-3.jpg",
   },
   {
     num: "03",
-    name: "Brand Visual & Campaign Suite",
-    category: "Commercial Design & Branding",
+    name: "Proucer Finder",
+    category: "Government & Private Procurement Leads",
+    summary:
+      "Aplikasi pencarian calon klien dan peluang pengadaan untuk sektor pemerintah maupun swasta.",
     url: "#contact",
-    col1Top:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055759_963cfb0b-4bd1-4b0f-9d0a-09bd6cf95b2f.png&w=1280&q=85",
-    col1Bottom:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_060108_438f781a-9846-4dcc-89ab-c4e6cb830f5b.png&w=1280&q=85",
-    col2Tall:
-      "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055818_9d062121-ad7e-46b9-999a-1a6a692ef1ee.png&w=1280&q=85",
+    col1Top: "/images/proucer%20finder-1.jpg",
+    col1Bottom: "/images/proucer%20finder-2.jpg",
+    col2Tall: "/images/procure%20finder-3.png",
   },
 ];
 
@@ -396,6 +393,9 @@ function ProjectCard({
               >
                 {project.name}
               </h3>
+              <p className="mt-1 max-w-2xl text-xs sm:text-sm font-light text-[#D7E2EA]/75">
+                {project.summary}
+              </p>
             </div>
           </div>
 
@@ -479,7 +479,9 @@ export default function HomePage() {
   const handleOpenContactWithTopic = (topic?: string) => {
     setSubmitted(false);
     if (topic) {
-      setProjectDetails(`Saya tertarik untuk melihat demo atau berdiskusi tentang proyek "${topic}".`);
+      setProjectDetails(
+        `Saya tertarik untuk melihat detail atau berdiskusi tentang proyek "${topic}".`
+      );
     }
     setContactOpen(true);
   };
@@ -929,7 +931,7 @@ export default function HomePage() {
                     required
                     value={projectDetails}
                     onChange={(e) => setProjectDetails(e.target.value)}
-                    placeholder="Tell us about your web app, 3D visual, branding, or campaign project..."
+                    placeholder="Tell us about your web app, procurement leads, 3D visual, or campaign project..."
                     className="w-full rounded-xl border border-[#D7E2EA]/20 bg-[#0C0C0C] px-4 py-3 text-sm text-white outline-none focus:border-[#B600A8]"
                   />
                 </div>
